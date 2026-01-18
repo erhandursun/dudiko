@@ -14,6 +14,8 @@ import HouseUnit from './HouseUnit';
 import Park from './Park';
 import { JumpPad, PhysicsBall, SpeedGate } from './FunInteractions';
 import Leaderboard from './Leaderboard';
+import Link from 'next/link'; // Not needed but safe
+import BookCafe from './BookCafe';
 import { ReadingNook, CafeZone, XOXBoard } from './InteractionZones';
 
 // --- SUB-COMPONENTS ---
@@ -429,8 +431,8 @@ export default function City({ onDraw }) {
             {/* Top Leaderboard in the center */}
             <Leaderboard position={[0, 0, -10]} rotation={[0, 0, 0]} />
 
-            {/* Reading Nook in the park area */}
-            <ReadingNook position={[-20, 0, -20]} />
+            {/* Book Cafe (Kitap Kafe) - Replaces ReadingNook */}
+            <BookCafe position={[-20, 0, -20]} rotation={[0, Math.PI / 4, 0]} />
 
             {/* Cafe in the plaza */}
             <CafeZone position={[8, 0, -5]} />
