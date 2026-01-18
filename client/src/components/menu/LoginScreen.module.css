@@ -63,6 +63,31 @@
     background: linear-gradient(to bottom, white, #fff0f5);
 }
 
+.randomBtn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: #FFEB3B;
+    color: #E65100;
+    font-weight: 900;
+    border: 3px solid white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 10;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.randomBtn:hover {
+    transform: scale(1.1) rotate(-3deg);
+    background: #FFD600;
+}
+
 .brandingHeader {
     text-align: center;
     margin-bottom: 20px;
@@ -127,7 +152,8 @@
     font-weight: bold;
     cursor: pointer;
     border-radius: 12px;
-    font-size: 13px;
+    font-size: 24px;
+    /* Larger for emoji icons */
     transition: all 0.2s;
 }
 
@@ -315,12 +341,24 @@
 }
 
 @media (max-width: 800px) {
+    .loginOverlay {
+        padding: 10px;
+        align-items: flex-start;
+        overflow-y: auto;
+    }
+
     .card {
         height: auto;
-        padding-bottom: 20px;
-        max-height: 95vh;
-        overflow-y: auto;
-        width: 95%;
+        min-height: auto;
+        padding-bottom: 80px;
+        /* Space for sticky button */
+        max-height: none;
+        width: 100%;
+        border-radius: 25px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
     }
 
     .splitLayout {
@@ -328,13 +366,40 @@
     }
 
     .previewPane {
-        height: 250px;
+        flex: none;
+        height: 280px;
         border-right: none;
         border-bottom: 4px solid white;
+        border-radius: 25px 25px 0 0;
+    }
+
+    .controlsPane {
+        padding: 20px;
+        gap: 15px;
     }
 
     .mainTitle {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
+    }
+
+    .charGrid,
+    .hairGrid,
+    .faceGrid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .startBtn {
+        position: fixed;
+        /* Sticky relative to viewport or absolute to card? Fixed is risky inside transform. Sticky is better but container needs overflow. Let's use Fixed at bottom of screen or card padding. */
+        /* Actually simpler: just make it big at bottom of flow */
+        width: calc(100% - 40px);
+        left: 20px;
+        bottom: 20px;
+        z-index: 1001;
+        /* Above everything */
+        position: fixed;
+        margin: 0;
     }
 }
 

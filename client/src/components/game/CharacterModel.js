@@ -11,7 +11,9 @@ export default function CharacterModel({
     type = "child",
     hairStyle = "classic",
     hairColor = "#3E2723",
-    faceType = "happy"
+    faceType = "happy",
+    glassesType = "none", // none, round, sunglasses
+    hatType = "none" // none, cap, wizard
 }) {
 
     // Scale and Geometry logic based on type
@@ -189,6 +191,39 @@ export default function CharacterModel({
                     <ringGeometry args={[0.08, 0.1, 16, 1, 0, Math.PI]} />
                     <meshStandardMaterial color="black" side={THREE.DoubleSide} />
                 </mesh>
+
+                {/* GLASSES ACCESSORY */}
+                {glassesType === 'round' && (
+                    <group position={[0, 0.05, 0.05]}>
+                        <mesh position={[-0.12, 0, 0]}> <ringGeometry args={[0.06, 0.08, 32]} /> <meshStandardMaterial color="black" side={THREE.DoubleSide} /> </mesh>
+                        <mesh position={[0.12, 0, 0]}> <ringGeometry args={[0.06, 0.08, 32]} /> <meshStandardMaterial color="black" side={THREE.DoubleSide} /> </mesh>
+                        <mesh position={[0, 0.0, 0]}> <boxGeometry args={[0.1, 0.02, 0.01]} /> <meshStandardMaterial color="black" /> </mesh>
+                    </group>
+                )}
+                {glassesType === 'sunglasses' && (
+                    <group position={[0, 0.05, 0.1]}>
+                        <mesh position={[0, 0, 0]}> <boxGeometry args={[0.5, 0.15, 0.05]} /> <meshStandardMaterial color="#1A237E" /> </mesh>
+                    </group>
+                )}
+            </group>
+
+            {/* HAT ACCESSORY - Attached safely to head position */}
+            <group position={[0, type === 'father' ? 2.6 : 1.85, 0]}>
+                {hatType === 'cap' && (
+                    <group position={[0, 0.35, 0.1]} rotation={[-0.2, 0, 0]}>
+                        {/* Cap Base */}
+                        <mesh position={[0, 0, -0.1]}> <sphereGeometry args={[0.39, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2]} /> <meshStandardMaterial color="#1565C0" /> </mesh>
+                        {/* Peak */}
+                        <mesh position={[0, 0, 0.3]} rotation={[0.2, 0, 0]}> <boxGeometry args={[0.4, 0.05, 0.3]} /> <meshStandardMaterial color="#0D47A1" /> </mesh>
+                    </group>
+                )}
+                {hatType === 'wizard' && (
+                    <group position={[0, 0.3, 0]}>
+                        <mesh position={[0, 0, 0]}> <cylinderGeometry args={[0.6, 0.6, 0.05]} /> <meshStandardMaterial color="#4A148C" /> </mesh>
+                        <mesh position={[0, 0.5, 0]}> <coneGeometry args={[0.4, 1.2, 32]} /> <meshStandardMaterial color="#7B1FA2" /> </mesh>
+                        <mesh position={[0, 0.5, 0.2]}> <sphereGeometry args={[0.1]} /> <meshStandardMaterial color="gold" /> </mesh>
+                    </group>
+                )}
             </group>
 
             {/* 5. Arms */}
