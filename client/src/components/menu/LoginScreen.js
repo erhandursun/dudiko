@@ -129,7 +129,16 @@ export default function LoginScreen({ onJoin }) {
 
                     {/* Right: Controls */}
                     <div className={styles.controlsPane}>
-                        <h1 className={styles.mainTitle}>Prenses Kasabası</h1>
+                        <div className={styles.brandingHeader}>
+                            <h1 className={styles.mainTitle}>DUDIKO.COM</h1>
+                            <div className={styles.designerBadge}>
+                                <span>Tasarımcı: </span>
+                                <span className={styles.designerName}>Elif (8 Yaşında) 👩‍🎨</span>
+                            </div>
+                        </div>
+                        <p className={styles.welcomeText}>
+                            Prenses Kasabası'na Hoşgeldin! Hayalindeki karakteri yarat ve maceraya katıl.
+                        </p>
 
                         {/* Tabs */}
                         <div className={styles.tabsContainer}>
