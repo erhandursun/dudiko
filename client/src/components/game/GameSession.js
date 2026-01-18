@@ -30,6 +30,8 @@ const keyboardMap = [
     { name: 'jump', keys: ['Space'] },
 ];
 
+import PaintballGun from './PaintballGun';
+
 export default function GameSession() {
     const currentWorld = useSocketStore((state) => state.currentWorld);
     const coins = useSocketStore((state) => state.coins);
@@ -75,6 +77,7 @@ export default function GameSession() {
                             {currentWorld === 'school' && <SchoolWorld />}
                             {currentWorld === 'race' && <RaceParkourWorld />}
 
+                            <PaintballGun />
                             <PlayerController joystickData={joystickData} buttonMove={buttonMove} />
                         </Physics>
 
@@ -93,6 +96,61 @@ export default function GameSession() {
 
                 {/* UI Overlay */}
                 <div className="hud-layer" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+
+                    {/* ACTION BUTTONS (Right Side) */}
+                    <div style={{ position: 'absolute', bottom: '120px', right: '30px', display: 'flex', flexDirection: 'column', gap: '15px', pointerEvents: 'auto' }}>
+                        {/* JUMP BUTTON */}
+                        <button
+                            onPointerDown={() => setJoystickData(prev => ({ ...prev, jump: true }))}
+                            onPointerUp={() => setJoystickData(prev => ({ ...prev, jump: false }))}
+                            className="hud-btn-jump"
+                            style={{
+                                width: '70px', height: '70px', borderRadius: '50%',
+                                background: 'rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(5px)',
+                                border: '2px solid rgba(255, 255, 255, 0.4)',
+                                fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }}
+                        >
+                            🦘
+                        </button>
+
+                        {/* SHOOT BUTTON (Paintball) */}
+                        <button
+                            onPointerDown={() => setButtonMove(prev => ({ ...prev, shoot: true }))}
+                            onPointerUp={() => setButtonMove(prev => ({ ...prev, shoot: false }))}
+                            className="hud-btn-shoot"
+                            style={{
+                                width: '70px', height: '70px', borderRadius: '50%',
+                                background: 'rgba(255, 0, 100, 0.3)', backdropFilter: 'blur(5px)',
+                                border: '2px solid rgba(255, 0, 100, 0.6)',
+                                fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: '0 0 15px rgba(255, 0, 100, 0.4)'
+                            }}
+                        >
+                            🔫
+                        </button>
+
+                        {/* HIDE BUTTON (Saklambaç) */}
+                        <button
+                            onClick={() => {
+                                const modes = ['tree', 'lamp', 'trash', null];
+                                const current = useSocketStore.getState().disguiseProp;
+                                const next = modes[(modes.indexOf(current) + 1) % modes.length];
+                                useSocketStore.getState().setDisguise(next);
+                            }}
+                            className="hud-btn-hide"
+                            style={{
+                                width: '70px', height: '70px', borderRadius: '50%',
+                                background: 'rgba(100, 255, 218, 0.3)', backdropFilter: 'blur(5px)',
+                                border: '2px solid rgba(100, 255, 218, 0.6)',
+                                fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: '0 0 15px rgba(100, 255, 218, 0.4)'
+                            }}
+                        >
+                            👻
+                        </button>
+                    </div>
+
                     <div style={{ position: 'absolute', top: 20, left: 20, pointerEvents: 'auto' }}>
                         <PlayerList />
                     </div>

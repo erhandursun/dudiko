@@ -3,9 +3,12 @@ import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import CharacterModel from './CharacterModel';
 import VehicleModel from './VehicleModel';
+import DisguiseModel from './DisguiseModel';
 import * as THREE from 'three';
 
-export default function RemotePlayer({ position, rotation, color, isDriving, name, lastChat, characterType, customization }) {
+export default function RemotePlayer({ position, rotation, color, isDriving, isDancing, disguiseProp, name, lastChat, characterType, customization }) {
+    // Merge disguise prop from root or customization
+    const activeDisguise = disguiseProp || customization?.disguiseProp;
     const ref = useRef();
     const [activeChat, setActiveChat] = useState(null);
 
@@ -56,7 +59,14 @@ export default function RemotePlayer({ position, rotation, color, isDriving, nam
                 modelGroupRef.current.quaternion.slerp(targetQuaternion, 0.2);
 
                 // Scale Animation Sync
-                modelGroupRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+                if (isDancing) {
+                    const danceSpeed = 10;
+                    modelGroupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * danceSpeed) * 0.5;
+                    modelGroupRef.current.position.y = Math.abs(Math.sin(state.clock.elapsedTime * danceSpeed * 2)) * 0.5;
+                } else {
+                    modelGroupRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+                    modelGroupRef.current.position.y = THREE.MathUtils.lerp(modelGroupRef.current.position.y, isDriving ? 0.5 : 0, 0.1);
+                }
             }
         } catch (err) {
             console.error('Error in RemotePlayer useFrame:', err);
@@ -70,18 +80,20 @@ export default function RemotePlayer({ position, rotation, color, isDriving, nam
 
     return (
         <group ref={ref}>
-            {/* Name Tag */}
-            <Text
-                position={[0, 2.8, 0]}
-                fontSize={0.3}
-                color="white"
-                anchorX="center"
-                anchorY="middle"
-                outlineWidth={0.02}
-                outlineColor="black"
-            >
-                {name || 'Unknown'}
-            </Text>
+            {/* Name Tag (Hide if disguised) */}
+            {!activeDisguise && (
+                <Text
+                    position={[0, 2.8, 0]}
+                    fontSize={0.3}
+                    color="white"
+                    anchorX="center"
+                    anchorY="middle"
+                    outlineWidth={0.02}
+                    outlineColor="black"
+                >
+                    {name || 'Unknown'}
+                </Text>
+            )}
 
             {/* Chat Bubble */}
             {activeChat && (
@@ -112,6 +124,8 @@ export default function RemotePlayer({ position, rotation, color, isDriving, nam
                     <group position={[0, 0.5, 0]}>
                         <VehicleModel color={color || "hotpink"} />
                     </group>
+                ) : activeDisguise ? (
+                    <DisguiseModel type={activeDisguise} />
                 ) : (
                     <CharacterModel color={color} type={characterType || 'child'} {...customization} />
                 )}

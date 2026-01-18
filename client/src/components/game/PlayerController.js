@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { useSocketStore } from '@/stores/socketStore';
 import CharacterModel from './CharacterModel';
 import VehicleModel from './VehicleModel';
+import DisguiseModel from './DisguiseModel';
 import Particles from './Particles';
 import Collectibles from './Collectibles';
 import VoiceChat from './VoiceChat';
@@ -21,6 +22,8 @@ export default function PlayerController({ joystickData, buttonMove }) {
     const currentWorld = useSocketStore((state) => state.currentWorld);
     const isDriving = useSocketStore((state) => state.isDriving);
     const toggleDriving = useSocketStore((state) => state.toggleDriving);
+    const isDancing = useSocketStore((state) => state.isDancing);
+    const toggleDance = useSocketStore((state) => state.toggleDance);
     const flightUnlocked = useSocketStore((state) => state.flightUnlocked);
     const hasWeapon = useSocketStore((state) => state.hasWeapon);
     const shoot = useSocketStore((state) => state.shoot);
@@ -106,6 +109,9 @@ export default function PlayerController({ joystickData, buttonMove }) {
         }
 
         if (moveDir.length() > 0) {
+            // Cancel dance if moving
+            if (isDancing) toggleDance();
+
             moveDir.normalize().multiplyScalar(isDriving ? DRIVE_SPEED : WALK_SPEED);
             rb.current.setLinvel({
                 x: moveDir.x,
@@ -133,6 +139,31 @@ export default function PlayerController({ joystickData, buttonMove }) {
             } else if (flightUnlocked && linvel.y < 20) {
                 // Flight / Hover - increased force
                 rb.current.applyImpulse({ x: 0, y: 1.5, z: 0 }, true);
+            }
+        }
+
+        // SHOOTING (Paintball)
+        if (b.shoot && (!lastUpdate.current || Date.now() - lastUpdate.current > 200)) { // 200ms cooldown (visual only here, logic separated)
+            // We use a separate cooldown for shooting to avoid spam
+            if (!rb.current.userData) rb.current.userData = { lastShot: 0 };
+            const now = Date.now();
+            if (now - rb.current.userData.lastShot > 300) {
+                rb.current.userData.lastShot = now;
+
+                // Calculate forward direction
+                const playerPos = rb.current.translation();
+                // Use camera direction or player rotation
+                // If moving, use moveDir. If stationary, use player rotation if tracked, or camera?
+                // Let's use groupRef rotation which is snappy visual rotation.
+                let shootDir = new THREE.Vector3(0, 0, 1);
+                if (groupRef.current) {
+                    shootDir.applyQuaternion(groupRef.current.quaternion);
+                }
+                shootDir.normalize();
+
+                // Slightly elevate origin so it doesn't hit the ground immediately
+                const origin = [playerPos.x, playerPos.y + 1.2, playerPos.z];
+                shoot(origin, [shootDir.x, shootDir.y, shootDir.z]);
             }
         }
 
@@ -195,7 +226,19 @@ export default function PlayerController({ joystickData, buttonMove }) {
 
         // --- ANIMATION ---
         if (groupRef.current) {
-            groupRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+            // DANCE ANIMATION
+            if (isDancing) {
+                const danceSpeed = 10;
+                groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * danceSpeed) * 0.5 + Math.PI; // Face camera roughly or just wiggle
+                groupRef.current.position.y = Math.abs(Math.sin(state.clock.elapsedTime * danceSpeed * 2)) * 0.5; // BOUNCE
+                groupRef.current.scale.lerp(new THREE.Vector3(1.1, 0.9, 1.1), 0.2); // SQUASH/STRETCH visual
+            } else {
+                groupRef.current.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+                // Reset position y if not jumping/falling? The rigid body handles physics Y, but groupRef acts as offset visual.
+                // We should be careful modifying groupRef.position.y if it's relative to RB.
+                // Resetting to 0 is safe for walking.
+                groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, isDriving ? 0.5 : 0, 0.1);
+            }
         }
     });
 
@@ -233,13 +276,17 @@ export default function PlayerController({ joystickData, buttonMove }) {
                     <group position={[0, 0.5, 0]}>
                         <VehicleModel color={myColor} />
                     </group>
+                ) : customization?.disguiseProp ? (
+                    <DisguiseModel type={customization.disguiseProp} />
                 ) : (
                     <CharacterModel color={myColor} type={characterType} {...(customization || {})} />
                 )}
-                {/* Name Tag */}
-                <Text position={[0, 2.8, 0]} fontSize={0.3} color="white" anchorX="center" anchorY="middle" outlineWidth={0.02} outlineColor="black">
-                    {myName}
-                </Text>
+                {/* Name Tag (Only show if NOT disguised) */}
+                {!customization?.disguiseProp && (
+                    <Text position={[0, 2.8, 0]} fontSize={0.3} color="white" anchorX="center" anchorY="middle" outlineWidth={0.02} outlineColor="black">
+                        {myName}
+                    </Text>
+                )}
 
                 {/* Driving Particles */}
                 <Particles parentRef={rb} isDriving={isDriving} />

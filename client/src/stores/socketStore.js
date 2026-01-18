@@ -6,6 +6,7 @@ export const useSocketStore = create((set, get) => ({
     playerId: null,
     players: {},
     isDriving: false,
+    isDancing: false,
     flightUnlocked: true,
     artworks: [],
     myColor: 'hotpink',
@@ -21,6 +22,7 @@ export const useSocketStore = create((set, get) => ({
     projectiles: [], // { id, position: [x,y,z], direction: [x,y,z], timestamp }
     customization: { hairStyle: 'classic', hairColor: '#3E2723', faceType: 'happy' },
     currentWorld: 'hub', // hub, town, school
+    disguiseProp: null, // 'tree', 'lamp', 'trash'
     notifications: [], // { id, message, type }
 
     setSocket: (socket) => set({ socket }),
@@ -109,6 +111,30 @@ export const useSocketStore = create((set, get) => ({
                         players: {
                             ...state.players,
                             [id]: { ...state.players[id], isDriving }
+                        }
+                    };
+                });
+            });
+
+            s.on('player-dance-changed', ({ id, isDancing }) => {
+                set((state) => {
+                    if (!state.players[id]) return state;
+                    return {
+                        players: {
+                            ...state.players,
+                            [id]: { ...state.players[id], isDancing }
+                        }
+                    };
+                });
+            });
+
+            s.on('player-disguised', ({ id, propType }) => {
+                set((state) => {
+                    if (!state.players[id]) return state;
+                    return {
+                        players: {
+                            ...state.players,
+                            [id]: { ...state.players[id], disguiseProp: propType }
                         }
                     };
                 });
@@ -370,6 +396,15 @@ export const useSocketStore = create((set, get) => ({
         }
     },
 
+    toggleDance: () => {
+        const { socket, isDancing } = get();
+        const newStatus = !isDancing;
+        set({ isDancing: newStatus });
+        if (socket) {
+            socket.emit('change-dance', newStatus);
+        }
+    },
+
     // REMOVED: buyPet (Purged Feature)
 
     reportMathSolved: (points) => {
@@ -383,16 +418,15 @@ export const useSocketStore = create((set, get) => ({
         }
     },
 
-    makeXOXMove: (boardId, index, symbol) => {
+    movePlayer: (position, rotation) => {
+        // ... (existing move logic might be here or implicitly handled by updateMyPosition)
+    },
+
+    setDisguise: (propType) => { // 'tree', 'lamp', 'trash', or null
         const { socket } = get();
-        set((state) => {
-            const newBoards = { ...state.xoxBoards };
-            if (!newBoards[boardId]) newBoards[boardId] = Array(9).fill(null);
-            newBoards[boardId][index] = symbol;
-            return { xoxBoards: newBoards };
-        });
+        set({ disguiseProp: propType });
         if (socket) {
-            socket.emit('xox-move', { boardId, index, playerSymbol: symbol });
+            socket.emit('set-disguise', propType);
         }
     },
 
