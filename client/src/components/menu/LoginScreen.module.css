@@ -376,31 +376,42 @@
     }
 
     .previewPane {
-        flex: 0 0 35%;
-        min-height: 200px;
+        flex: 0 0 30%;
+        /* Even smaller preview */
+        min-height: 150px;
         border-right: none;
         border-bottom: 2px solid white;
-        border-radius: 0 0 30px 30px;
+        border-radius: 0 0 20px 20px;
         z-index: 2;
-        /* Ensure it stays on top */
+    }
+
+    .previewHint {
+        font-size: 10px;
+        bottom: 10px;
+    }
+
+    .randomBtn {
+        bottom: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        font-size: 10px;
     }
 
     .controlsPane {
         flex: 1;
-        padding: 10px 15px;
-        /* Reduced padding */
-        gap: 10px;
+        padding: 8px 10px;
+        /* Minimal padding */
+        gap: 5px;
+        /* Minimal gap */
         overflow-y: auto;
-        /* Internal scrolling only */
         display: flex;
         flex-direction: column;
         background: white;
         -webkit-overflow-scrolling: touch;
-        /* Smooth scroll on iOS */
     }
 
     .brandingHeader {
-        margin-bottom: 5px;
+        margin-bottom: 2px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -408,14 +419,14 @@
     }
 
     .mainTitle {
-        font-size: 1.4rem;
+        font-size: 1.1rem;
+        /* Tiny title */
         margin: 0;
     }
 
     .designerBadge {
-        font-size: 0.6rem;
-        padding: 2px 6px;
-        margin: 0;
+        display: none;
+        /* Hide badge completely */
     }
 
     .designerBadge span:first-child {
@@ -427,50 +438,75 @@
     }
 
     .tabsContainer {
-        margin-bottom: 10px;
-        padding: 4px;
+        margin-bottom: 5px;
+        padding: 2px;
         flex-shrink: 0;
+    }
+
+    .tabBtn {
+        padding: 5px;
+        font-size: 16px;
     }
 
     .joinForm {
         overflow-y: visible;
-        /* Let controlsPane handle scroll */
         padding-right: 0;
         padding-bottom: 20px;
-        /* Space for easier scrolling at bottom */
     }
 
-    /* Start button stays at top, non-sticky to avoid layout issues */
+    /* Start button compact */
     .startBtn {
         width: 100%;
         margin-top: 5px;
         position: static;
         box-shadow: none;
-        padding: 12px;
-        font-size: 1rem;
+        padding: 8px;
+        /* Classic button size */
+        font-size: 0.9rem;
         flex-shrink: 0;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
+        border-radius: 10px;
     }
 
     .charGrid,
     .hairGrid,
     .faceGrid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 5px;
+        gap: 3px;
+        /* Tiny gap */
     }
 
     .inputSection {
+        padding: 5px;
+        border-radius: 10px;
+        gap: 5px;
+    }
+
+    .inputSection label {
+        font-size: 10px;
+        margin-bottom: 0;
+    }
+
+    .inputSection input {
         padding: 8px;
+        font-size: 13px;
     }
 
     .charButton,
     .smallBtn {
-        padding: 4px;
-        font-size: 11px;
+        padding: 3px;
+        font-size: 9px;
+        border-radius: 8px;
     }
 
     .charIcon {
-        font-size: 16px;
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+
+    .colorChip {
+        width: 28px;
+        height: 28px;
     }
 }
 
