@@ -262,6 +262,11 @@ export default function LoginScreen({ onJoin }) {
                         </div>
 
                         <form onSubmit={handleJoin} className={styles.joinForm}>
+                            {/* START BUTTON MOVED TO TOP */}
+                            <button type="submit" className={styles.startBtn} style={{ marginBottom: '20px' }}>
+                                MACERAYA BAŞLA! 🏰💎
+                            </button>
+
                             {activeTab === 'identity' && (
                                 <>
                                     <div className={styles.inputSection}>
@@ -436,9 +441,7 @@ export default function LoginScreen({ onJoin }) {
                                 </div>
                             )}
 
-                            <button type="submit" className={styles.startBtn}>
-                                MACERAYA BAŞLA! 🏰💎
-                            </button>
+
                         </form>
                     </div>
                 </div>

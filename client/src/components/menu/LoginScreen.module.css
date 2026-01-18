@@ -309,7 +309,7 @@
     font-weight: 900;
     letter-spacing: 1px;
     cursor: pointer;
-    margin-top: auto;
+    margin-top: 20px;
     box-shadow: 0 10px 20px rgba(224, 64, 251, 0.3);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
@@ -391,16 +391,10 @@
     }
 
     .startBtn {
-        position: fixed;
-        /* Sticky relative to viewport or absolute to card? Fixed is risky inside transform. Sticky is better but container needs overflow. Let's use Fixed at bottom of screen or card padding. */
-        /* Actually simpler: just make it big at bottom of flow */
-        width: calc(100% - 40px);
-        left: 20px;
-        bottom: 20px;
-        z-index: 1001;
-        /* Above everything */
-        position: fixed;
-        margin: 0;
+        width: 100%;
+        margin-top: 10px;
+        position: static;
+        box-shadow: none;
     }
 }
 
