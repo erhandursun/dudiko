@@ -11,6 +11,7 @@ import PlayerController from './PlayerController';
 import TownWorld from './TownWorld';
 import SchoolWorld from './SchoolWorld';
 import RaceParkourWorld from './RaceParkourWorld';
+import CandyWorld from './CandyWorld';
 import DrawingBoard from './DrawingBoard';
 import Joystick from './Joystick';
 import PlayerList from './PlayerList';
@@ -76,6 +77,7 @@ export default function GameSession() {
                             {currentWorld === 'town' && <TownWorld onDraw={handleWallDraw} />}
                             {currentWorld === 'school' && <SchoolWorld />}
                             {currentWorld === 'race' && <RaceParkourWorld />}
+                            {currentWorld === 'candy' && <CandyWorld />}
 
                             <PaintballGun />
                             <PlayerController joystickData={joystickData} buttonMove={buttonMove} />
@@ -174,7 +176,7 @@ export default function GameSession() {
                         </div>
                         <div style={{ pointerEvents: 'auto' }}> <MiniMap /> </div>
                         <div className="glass-panel" style={{ padding: '4px 10px', color: '#ff85c0', fontSize: '12px', fontWeight: 'bold', pointerEvents: 'auto' }}>
-                            {currentWorld === 'school' ? '🏫 OKULDA' : currentWorld === 'race' ? '🏎️ PARKURDA' : '🏰 KASABADA'}
+                            {currentWorld === 'school' ? '🏫 OKULDA' : currentWorld === 'race' ? '🏎️ PARKURDA' : currentWorld === 'candy' ? '🍭 ŞEKER DİYARI' : '🏰 KASABADA'}
                         </div>
                         <button onClick={() => setShowDrawingBoard(true)} className="glass-panel" style={{ padding: '8px', background: 'rgba(0,0,0,0.4)', color: 'white', pointerEvents: 'auto', border: 'none', borderRadius: '50%' }}>🎨</button>
                     </div>

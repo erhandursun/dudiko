@@ -59,6 +59,22 @@ export default function EntranceHub() {
                             <button className={styles.goBtnPremium} style={{ background: '#38bdf8' }}>PARKURA GİT 🏁</button>
                         </div>
                     </div>
+
+                    {/* CANDY WORLD (NEW) */}
+                    <div
+                        className={styles.worldCard}
+                        onClick={() => setWorld('candy')}
+                    >
+                        <div className={styles.cardImage} style={{ backgroundImage: 'linear-gradient(45deg, #fbc2eb 0%, #a6c1ee 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '50px' }}>
+                            🍭
+                            <div className={styles.badgePremium} style={{ background: '#e056fd' }}>YENİ</div>
+                        </div>
+                        <div className={styles.cardBody}>
+                            <h3>Şeker Diyarı 🍬</h3>
+                            <p>Dev lolipoplar, çikolata ırmakları ve tatlı sürprizler!</p>
+                            <button className={styles.goBtnPremium} style={{ background: '#e056fd' }}>IŞINLAN 🧁</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div className={styles.footer}>
