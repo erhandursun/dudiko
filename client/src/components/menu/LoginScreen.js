@@ -23,7 +23,7 @@ export default function LoginScreen({ onJoin }) {
     const [backpackType, setBackpackType] = useState('none');
     const [wingsType, setWingsType] = useState('none');
 
-
+    const [activeTab, setActiveTab] = useState('identity'); // identity, style, face, accessories
     const [ornaments, setOrnaments] = useState([]);
 
     const randomizeCharacter = () => {
@@ -253,126 +253,192 @@ export default function LoginScreen({ onJoin }) {
                             </div>
                         </div>
 
-                        <form onSubmit={handleJoin} className={styles.dashboardContainer}>
+                        {/* Tabs */}
+                        <div className={styles.tabsContainer}>
+                            <button className={`${styles.tabBtn} ${activeTab === 'identity' ? styles.tabActive : ''}`} onClick={() => setActiveTab('identity')} title="Kimlik">👤</button>
+                            <button className={`${styles.tabBtn} ${activeTab === 'style' ? styles.tabActive : ''}`} onClick={() => setActiveTab('style')} title="Stil">🎨</button>
+                            <button className={`${styles.tabBtn} ${activeTab === 'face' ? styles.tabActive : ''}`} onClick={() => setActiveTab('face')} title="Yüz">😊</button>
+                            <button className={`${styles.tabBtn} ${activeTab === 'accessories' ? styles.tabActive : ''}`} onClick={() => setActiveTab('accessories')} title="Aksesuar">😎</button>
+                        </div>
 
-                            {/* SECTION 1: IDENTITY */}
-                            <div className={styles.sectionBlock}>
-                                <div className={styles.sectionHeader}>İSMİN NEDİR? ✍️</div>
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="Buraya yaz..."
-                                    maxLength={15}
-                                    required
-                                    className={styles.bigNameInput}
-                                />
-                            </div>
-
-                            <div className={styles.sectionBlock}>
-                                <div className={styles.sectionHeader}>KİM OLMAK İSTERSİN? 🎭</div>
-                                <div className={styles.horizontalStrip}>
-                                    {CHAR_TYPES.map(t => (
-                                        <button
-                                            key={t.id}
-                                            type="button"
-                                            className={`${styles.charButton} ${characterType === t.id ? styles.active : ''}`}
-                                            onClick={() => setCharacterType(t.id)}
-                                        >
-                                            <span className={styles.charIcon}>{t.label.split(' ')[1]}</span>
-                                            <span className={styles.charLabelText}>{t.label.split(' ')[0]}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* SECTION 2: STYLE (Colors & Hair) */}
-                            <div className={styles.sectionBlock}>
-                                <div className={styles.sectionHeader}>TARZIN VE SAÇIN 🎨</div>
-                                <div className={styles.horizontalStrip}>
-                                    {/* Dress Colors */}
-                                    {COLORS.map(c => (
-                                        <button
-                                            key={c.value}
-                                            type="button"
-                                            className={`${styles.colorChip} ${color === c.value ? styles.active : ''}`}
-                                            style={{ backgroundColor: c.value }}
-                                            onClick={() => setColor(c.value)}
-                                            title={c.name}
+                        <form onSubmit={handleJoin} className={styles.joinForm}>
+                            {activeTab === 'identity' && (
+                                <>
+                                    <div className={styles.inputSection}>
+                                        <label>İsmin Nedir?</label>
+                                        <input
+                                            type="text"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            placeholder="Harika bir isim yaz..."
+                                            maxLength={15}
+                                            required
                                         />
-                                    ))}
-                                    {/* Separator */}
-                                    <div style={{ width: '1px', background: '#eee', margin: '0 5px' }}></div>
-                                    {/* Hair Styles */}
-                                    {HAIR_STYLES.map(s => (
-                                        <button
-                                            key={s.id}
-                                            type="button"
-                                            className={`${styles.smallBtn} ${hairStyle === s.id ? styles.active : ''}`}
-                                            onClick={() => setHairStyle(s.id)}
-                                        >
-                                            {s.label}
-                                        </button>
-                                    ))}
-                                    {/* Separator */}
-                                    <div style={{ width: '1px', background: '#eee', margin: '0 5px' }}></div>
-                                    {/* Hair Colors */}
-                                    {HAIR_COLORS.map(c => (
-                                        <button
-                                            key={c.value}
-                                            type="button"
-                                            className={`${styles.colorChip} ${hairColor === c.value ? styles.active : ''}`}
-                                            style={{ backgroundColor: c.value, borderRadius: '4px' }}
-                                            onClick={() => setHairColor(c.value)}
-                                            title={c.name}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
+                                    </div>
 
-                            {/* SECTION 3: FACE & FEELING */}
-                            <div className={styles.sectionBlock}>
-                                <div className={styles.sectionHeader}>NASIL HİSSEDİYORSUN? 😊</div>
-                                <div className={styles.horizontalStrip}>
-                                    {FACE_TYPES.map(f => (
-                                        <button
-                                            key={f.id}
-                                            type="button"
-                                            className={`${styles.largeBtn} ${faceType === f.id ? styles.active : ''}`}
-                                            onClick={() => setFaceType(f.id)}
-                                        >
-                                            {f.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                                    <div className={styles.inputSection}>
+                                        <label>Kim Olmak İstersin?</label>
+                                        <div className={styles.charGrid}>
+                                            {CHAR_TYPES.map(t => (
+                                                <button
+                                                    key={t.id}
+                                                    type="button"
+                                                    title={t.label}
+                                                    className={`${styles.charButton} ${characterType === t.id ? styles.active : ''}`}
+                                                    onClick={() => setCharacterType(t.id)}
+                                                >
+                                                    <span className={styles.charIcon}>{t.label.split(' ')[1]}</span>
+                                                    <span className={styles.charLabelText}>{t.label.split(' ')[0]}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
 
-                            {/* SECTION 4: ACCESSORIES */}
-                            <div className={styles.sectionBlock}>
-                                <div className={styles.sectionHeader}>SÜSLERİNİ SEÇ ✨</div>
-                                <div className={styles.horizontalStrip}>
-                                    {/* Combined Accessories Strip for compactness */}
-                                    {HAT_TYPES.map(t => (
-                                        <button key={t.id} type="button" className={`${styles.smallBtn} ${hatType === t.id ? styles.active : ''}`} onClick={() => setHatType(t.id)}>{t.label}</button>
-                                    ))}
-                                    {GLASSES_TYPES.map(t => (
-                                        <button key={t.id} type="button" className={`${styles.smallBtn} ${glassesType === t.id ? styles.active : ''}`} onClick={() => setGlassesType(t.id)}>{t.label}</button>
-                                    ))}
-                                    {BACKPACK_TYPES.map(t => (
-                                        <button key={t.id} type="button" className={`${styles.smallBtn} ${backpackType === t.id ? styles.active : ''}`} onClick={() => setBackpackType(t.id)}>{t.label}</button>
-                                    ))}
-                                    {WINGS_TYPES.map(t => (
-                                        <button key={t.id} type="button" className={`${styles.smallBtn} ${wingsType === t.id ? styles.active : ''}`} onClick={() => setWingsType(t.id)}>{t.label}</button>
-                                    ))}
+                            {activeTab === 'style' && (
+                                <>
+                                    <div className={styles.inputSection}>
+                                        <label>Elbise Rengi?</label>
+                                        <div className={styles.colorPalette}>
+                                            {COLORS.map(c => (
+                                                <button
+                                                    key={c.value}
+                                                    type="button"
+                                                    className={`${styles.colorChip} ${color === c.value ? styles.active : ''}`}
+                                                    style={{ backgroundColor: c.value }}
+                                                    onClick={() => setColor(c.value)}
+                                                    title={c.name}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.inputSection}>
+                                        <label>Saç Modeli?</label>
+                                        <div className={styles.hairGrid}>
+                                            {HAIR_STYLES.map(s => (
+                                                <button
+                                                    key={s.id}
+                                                    type="button"
+                                                    className={`${styles.smallBtn} ${hairStyle === s.id ? styles.active : ''}`}
+                                                    onClick={() => setHairStyle(s.id)}
+                                                >
+                                                    {s.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.inputSection}>
+                                        <label>Saç Rengi?</label>
+                                        <div className={styles.colorPalette}>
+                                            {HAIR_COLORS.map(c => (
+                                                <button
+                                                    key={c.value}
+                                                    type="button"
+                                                    className={`${styles.colorChip} ${hairColor === c.value ? styles.active : ''}`}
+                                                    style={{ backgroundColor: c.value }}
+                                                    onClick={() => setHairColor(c.value)}
+                                                    title={c.name}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {activeTab === 'face' && (
+                                <div className={styles.inputSection}>
+                                    <label>Nasıl Hissediyorsun?</label>
+                                    <div className={styles.faceGrid}>
+                                        {FACE_TYPES.map(f => (
+                                            <button
+                                                key={f.id}
+                                                type="button"
+                                                className={`${styles.largeBtn} ${faceType === f.id ? styles.active : ''}`}
+                                                onClick={() => setFaceType(f.id)}
+                                            >
+                                                {f.label}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+
+                            {activeTab === 'accessories' && (
+                                <div className={styles.inputSection}>
+                                    <label>Aksesuar Seç!</label>
+
+                                    <div style={{ marginBottom: '15px' }}>
+                                        <span style={{ fontSize: '0.8rem', color: '#666', marginBottom: '5px', display: 'block' }}>Şapka</span>
+                                        <div className={styles.hairGrid}>
+                                            {HAT_TYPES.map(t => (
+                                                <button
+                                                    key={t.id}
+                                                    type="button"
+                                                    className={`${styles.smallBtn} ${hatType === t.id ? styles.active : ''}`}
+                                                    onClick={() => setHatType(t.id)}
+                                                >
+                                                    {t.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div style={{ marginBottom: '15px' }}>
+                                        <span style={{ fontSize: '0.8rem', color: '#666', marginBottom: '5px', display: 'block' }}>Gözlük</span>
+                                        <div className={styles.hairGrid}>
+                                            {GLASSES_TYPES.map(t => (
+                                                <button
+                                                    key={t.id}
+                                                    type="button"
+                                                    className={`${styles.smallBtn} ${glassesType === t.id ? styles.active : ''}`}
+                                                    onClick={() => setGlassesType(t.id)}
+                                                >
+                                                    {t.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div style={{ marginBottom: '15px' }}>
+                                        <span style={{ fontSize: '0.8rem', color: '#666', marginBottom: '5px', display: 'block' }}>Sırt Çantası</span>
+                                        <div className={styles.hairGrid}>
+                                            {BACKPACK_TYPES.map(t => (
+                                                <button
+                                                    key={t.id}
+                                                    type="button"
+                                                    className={`${styles.smallBtn} ${backpackType === t.id ? styles.active : ''}`}
+                                                    onClick={() => setBackpackType(t.id)}
+                                                >
+                                                    {t.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div style={{ marginBottom: '15px' }}>
+                                        <span style={{ fontSize: '0.8rem', color: '#666', marginBottom: '5px', display: 'block' }}>Kanatlar</span>
+                                        <div className={styles.hairGrid}>
+                                            {WINGS_TYPES.map(t => (
+                                                <button
+                                                    key={t.id}
+                                                    type="button"
+                                                    className={`${styles.smallBtn} ${wingsType === t.id ? styles.active : ''}`}
+                                                    onClick={() => setWingsType(t.id)}
+                                                >
+                                                    {t.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             <button type="submit" className={styles.startBtn}>
-                                MACERAYA BAŞLA! 🚀
+                                MACERAYA BAŞLA! 🏰💎
                             </button>
-
-                            {/* Extra padding at bottom for scroll on mobile */}
-                            <div style={{ height: '50px' }}></div>
                         </form>
                     </div>
                 </div>
