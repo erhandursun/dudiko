@@ -1,0 +1,55 @@
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.board {
+    background: #FFECB3;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    border: 5px solid #8D6E63;
+}
+
+.canvas {
+    background: white;
+    cursor: crosshair;
+    border: 2px solid #ccc;
+    touch-action: none;
+}
+
+.controls {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.button,
+.closeButton {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.button {
+    background: #4CAF50;
+    color: white;
+}
+
+.closeButton {
+    background: #F44336;
+    color: white;
+}

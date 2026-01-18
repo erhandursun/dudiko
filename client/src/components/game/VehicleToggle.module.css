@@ -1,0 +1,90 @@
+.container {
+    position: absolute;
+    bottom: 220px;
+    right: 18%;
+    z-index: 1000;
+}
+
+.toggleBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.toggleBtn:hover {
+    transform: scale(1.1) rotate(5deg);
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 15px 40px 0 rgba(236, 64, 122, 0.3);
+}
+
+.toggleBtn:active {
+    transform: scale(0.95);
+}
+
+.icon {
+    display: block;
+    transition: all 0.5s ease;
+}
+
+.driveActive {
+    background: linear-gradient(135deg, rgba(236, 64, 122, 0.8), rgba(255, 64, 129, 0.8));
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.driveActive .icon {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-5px);
+    }
+
+    60% {
+        transform: translateY(-3px);
+    }
+}
+
+/* Tooltip */
+.toggleBtn::after {
+    content: 'Drive Mode';
+    position: absolute;
+    right: 85px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: 'Outfit', sans-serif;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    transform: translateX(10px);
+}
+
+.toggleBtn:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+}

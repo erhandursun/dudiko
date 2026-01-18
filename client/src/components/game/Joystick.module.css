@@ -1,0 +1,30 @@
+.joystickWrapper {
+    position: absolute;
+    bottom: 60px;
+    right: 60px;
+    width: 120px;
+    height: 120px;
+    z-index: 999;
+    touch-action: none;
+    /* Custom container visual */
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    /* Let clicks pass through to nipplejs unless interacting */
+}
+
+/* We target the nipplejs elements dynamically if possible, or wrap them */
+/* Since nipplejs injects inline styles, we can purely style the container or use ::after effects */
+
+.joystickWrapper::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}

@@ -1,0 +1,17 @@
+[
+    {
+        "id": "1",
+        "image": "https://images.remote.com/placeholder1.png",
+        "artist": "Prenses",
+        "position": [
+            10,
+            2,
+            10
+        ],
+        "rotation": [
+            0,
+            0,
+            0
+        ]
+    }
+]

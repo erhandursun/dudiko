@@ -1,0 +1,54 @@
+.mapContainer {
+    width: 100px;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.map {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: radial-gradient(circle, #E1F5FE 0%, #B3E5FC 100%);
+}
+
+.playerDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    position: absolute;
+    border: 1px solid white;
+    transform: translate(-50%, -50%);
+    transition: all 0.1s linear;
+}
+
+.selfDot {
+    width: 18px;
+    height: 18px;
+    border: 4px solid var(--gold);
+    z-index: 10;
+    animation: proPulse 2s infinite ease-in-out;
+}
+
+@keyframes proPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 0 0px rgba(255, 215, 0, 0.4);
+    }
+
+    70% {
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 0 0px rgba(255, 215, 0, 0);
+    }
+}
