@@ -6,8 +6,11 @@ import { OrbitControls, Environment } from '@react-three/drei';
 import CharacterModel from '../game/CharacterModel';
 import styles from './LoginScreen.module.css';
 
+import { useSocketStore } from '@/stores/socketStore'; // Import Store
+
 export default function LoginScreen({ onJoin }) {
-    const [name, setName] = useState('');
+    const players = useSocketStore((state) => state.players); // Get Live Players
+    // ... existing state ...
     const [color, setColor] = useState('hotpink');
     const [characterType, setCharacterType] = useState('child');
     const [hairStyle, setHairStyle] = useState('classic');
@@ -139,6 +142,41 @@ export default function LoginScreen({ onJoin }) {
                         <p className={styles.welcomeText}>
                             Prenses Kasabası'na Hoşgeldin! Hayalindeki karakteri yarat ve maceraya katıl.
                         </p>
+
+                        {/* LIVE STATS */}
+                        <div className={styles.liveStats}>
+                            <h3 className={styles.liveTitle}>🔴 ŞU AN OYUNDA:</h3>
+                            <div className={styles.statGrid}>
+                                <div className={styles.statItem}>
+                                    <span className={styles.statIcon}>🏰</span>
+                                    <span className={styles.statCount}>{Object.values(players).filter(p => !p.currentWorld || p.currentWorld === 'hub' || p.currentWorld === 'town').length}</span>
+                                    <span className={styles.statLabel}>Meydan</span>
+                                </div>
+                                <div className={styles.statItem}>
+                                    <span className={styles.statIcon}>🏫</span>
+                                    <span className={styles.statCount}>{Object.values(players).filter(p => p.currentWorld === 'school').length}</span>
+                                    <span className={styles.statLabel}>Okul</span>
+                                </div>
+                                <div className={styles.statItem}>
+                                    <span className={styles.statIcon}>🏎️</span>
+                                    <span className={styles.statCount}>{Object.values(players).filter(p => p.currentWorld === 'race').length}</span>
+                                    <span className={styles.statLabel}>Yarış</span>
+                                </div>
+                            </div>
+                            <div className={styles.onlineList}>
+                                {Object.values(players).length > 0 ? (
+                                    <marquee scrollamount="5">
+                                        {Object.values(players).map((p, i) => (
+                                            <span key={i} style={{ marginRight: '20px', color: '#E91E63', fontWeight: 'bold' }}>
+                                                {p.name} {p.currentWorld === 'school' ? '🏫' : p.currentWorld === 'race' ? '🏎️' : '🏰'}
+                                            </span>
+                                        ))}
+                                    </marquee>
+                                ) : (
+                                    <span style={{ fontSize: '12px', color: '#999' }}>Henüz kimse yok, ilk sen ol! 🚀</span>
+                                )}
+                            </div>
+                        </div>
 
                         {/* Tabs */}
                         <div className={styles.tabsContainer}>

@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSocketStore } from '@/stores/socketStore';
 import LoginScreen from '@/components/menu/LoginScreen';
 
@@ -11,11 +11,17 @@ const EntranceHub = dynamic(() => import('@/components/menu/EntranceHub'), { ssr
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const currentWorld = useSocketStore((state) => state.currentWorld);
-  const connect = useSocketStore((state) => state.connect);
+  const initSocket = useSocketStore((state) => state.initSocket);
+  const joinGame = useSocketStore((state) => state.joinGame);
+
+  // Initialize socket connection on mount to get live stats
+  useEffect(() => {
+    initSocket();
+  }, [initSocket]);
 
   const handleJoin = (name, color, characterType, customization) => {
     console.log('V2 Flow: Joining with', { name, currentWorld });
-    connect(name, color, characterType, customization);
+    joinGame(name, color, characterType, customization);
     setIsLoggedIn(true);
   };
 
