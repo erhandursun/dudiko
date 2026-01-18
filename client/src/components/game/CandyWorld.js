@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { RigidBody } from '@react-three/rapier';
-import { Float, Stars, Text3D, Center, Html } from '@react-three/drei';
+import { Float, Stars, Text, Center, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
 export default function CandyWorld() {
@@ -121,15 +121,12 @@ function LetterCollectible({ char, pos, col, onCollect }) {
             <Float speed={2} rotationIntensity={1} floatIntensity={1}>
                 <group position={pos}>
                     <Center>
-                        <Text3D
-                            font="/fonts/Inter_Bold.json"
-                            size={3}
-                            height={0.5}
-                            curveSegments={12}
+                        <Text
+                            fontSize={3}
+                            color={col}
                         >
                             {char}
-                            <meshStandardMaterial color={col} emissive={col} emissiveIntensity={0.5} />
-                        </Text3D>
+                        </Text>
                     </Center>
                     {/* Glow Effect */}
                     <pointLight distance={5} intensity={2} color={col} />
