@@ -11,398 +11,162 @@
     z-index: 1000;
 }
 
+/* UNIFIED DASHBOARD LAYOUT */
+.dashboardContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.sectionBlock {
+    background: transparent;
+    padding: 0;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 900;
+    color: #c2185b;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 5px;
+    /* Sticky header? Maybe not needed if sections are short. */
+}
+
+.horizontalStrip {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 5px 5px 15px 5px;
+    /* Bottom padding for scrollbar space or shadow */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+    scroll-snap-type: x mandatory;
+}
+
+.horizontalStrip::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+}
+
+/* Make items snap */
+.horizontalStrip>* {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+}
+
+/* BIG INPUT */
+.bigNameInput {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 20px;
+    border: 3px solid #f8bbd0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #c2185b;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.bigNameInput:focus {
+    border-color: #E91E63;
+    outline: none;
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(233, 30, 99, 0.15);
+}
+
+/* Adjusted Card for Single View */
 .card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(25px);
     border-radius: 40px;
-    width: 90%;
-    max-width: 1000px;
-    height: 650px;
-    box-shadow: 0 30px 60px rgba(233, 30, 99, 0.2);
+    width: 95%;
+    max-width: 1100px;
+    height: 90vh;
+    /* Taller */
+    max-height: 800px;
+    box-shadow: 0 30px 80px rgba(233, 30, 99, 0.25);
     border: 8px solid white;
     overflow: hidden;
     position: relative;
 }
 
-.splitLayout {
-    display: flex;
-    height: 100%;
-}
-
-/* LEFT: PREVIEW */
+/* Fix Preview size */
 .previewPane {
-    flex: 1.2;
-    background: radial-gradient(circle, #fff 0%, #fce4ec 100%);
+    flex: 1;
+    /* Less wide */
+    background: radial-gradient(circle at center, #fff 20%, #fce4ec 100%);
     position: relative;
     border-right: 4px solid white;
 }
 
-.previewContainer {
-    width: 100%;
-    height: 100%;
-}
-
-.previewHint {
-    position: absolute;
-    bottom: 30px;
-    width: 100%;
-    text-align: center;
-    color: #ad1457;
-    font-weight: 800;
-    font-size: 14px;
-    letter-spacing: 1px;
-    opacity: 0.8;
-}
-
-/* RIGHT: CONTROLS */
+/* Wider Controls */
 .controlsPane {
-    flex: 1;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(to bottom, white, #fff0f5);
+    flex: 1.4;
+    /* More room for dashboard */
+    padding: 30px;
+    background: linear-gradient(to right bottom, #fff, #fff0f5);
 }
 
-.randomBtn {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: #FFEB3B;
-    color: #E65100;
-    font-weight: 900;
-    border: 3px solid white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    font-size: 14px;
-    z-index: 10;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.randomBtn:hover {
-    transform: scale(1.1) rotate(-3deg);
-    background: #FFD600;
-}
-
-.brandingHeader {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.mainTitle {
-    font-size: 3.5rem;
-    font-weight: 900;
-    background: linear-gradient(45deg, #FF4081, #7C4DFF);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin: 0;
-    line-height: 1;
-    filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.1));
-}
-
-.designerBadge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #fff;
-    padding: 5px 15px;
-    border-radius: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    margin-top: 10px;
-    font-size: 0.9rem;
-    color: #666;
-    border: 1px solid #ffcdd2;
-}
-
-.designerName {
-    color: #E91E63;
-    font-weight: bold;
-}
-
-.welcomeText {
-    text-align: center;
-    color: #880e4f;
-    font-size: 0.95rem;
-    margin-bottom: 25px;
-    line-height: 1.4;
-    opacity: 0.8;
-}
-
-.tabsContainer {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    background: white;
-    padding: 6px;
-    border-radius: 16px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    border: 1px solid #fce4ec;
-}
-
-.tabBtn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background: transparent;
-    color: #90a4ae;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 12px;
-    font-size: 24px;
-    /* Larger for emoji icons */
-    transition: all 0.2s;
-}
-
-.tabActive {
-    background: #fce4ec;
-    color: #d81b60;
-    box-shadow: 0 2px 5px rgba(244, 143, 177, 0.2);
-}
-
-.joinForm {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow-y: auto;
-    padding-right: 5px;
-    flex: 1;
-}
-
-.inputSection {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: white;
-    padding: 15px;
-    border-radius: 20px;
-    border: 1px solid #f8bbd0;
-    box-shadow: 0 2px 10px rgba(233, 30, 99, 0.02);
-}
-
-.inputSection label {
-    font-weight: 800;
-    color: #c2185b;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.inputSection input {
-    padding: 12px 15px;
-    border-radius: 12px;
-    border: 2px solid #f0f0f0;
-    background: #fafafa;
-    font-size: 16px;
-    outline: none;
-    transition: all 0.3s;
-    color: #333;
-}
-
-.inputSection input:focus {
-    border-color: #E91E63;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
-}
-
-.charGrid,
-.hairGrid,
-.faceGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
-
-.hairGrid,
-.faceGrid {
-    grid-template-columns: repeat(3, 1fr);
-}
-
-.charButton,
-.smallBtn,
-.largeBtn {
-    background: white;
-    border: 2px solid #f0f0f0;
-    border-radius: 15px;
-    padding: 10px 5px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    font-size: 14px;
-    color: #666;
-    font-weight: 600;
-}
-
-.charButton:hover,
-.smallBtn:hover,
-.largeBtn:hover {
-    transform: translateY(-2px);
-    border-color: #f8bbd0;
-}
-
-.charButton.active,
-.smallBtn.active,
-.largeBtn.active {
-    border-color: #E91E63;
-    background: #fff0f5;
-    color: #c2185b;
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(233, 30, 99, 0.15);
-}
-
-.smallBtn.active,
-.largeBtn.active {
-    background: #E91E63;
-    color: white;
-    border-color: #E91E63;
-}
-
-.charIcon {
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.charLabelText {
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.colorPalette {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.colorChip {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 3px solid white;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.colorChip:hover {
-    transform: scale(1.1);
-}
-
-.colorChip.active {
-    transform: scale(1.25);
-    border-color: #E91E63;
-}
-
-.startBtn {
-    background: linear-gradient(45deg, #FF4081, #E040FB);
-    color: white;
-    border: none;
-    padding: 18px;
-    border-radius: 20px;
-    font-size: 1.2rem;
-    font-weight: 900;
-    letter-spacing: 1px;
-    cursor: pointer;
-    margin-top: auto;
-    box-shadow: 0 10px 20px rgba(224, 64, 251, 0.3);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.startBtn:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(224, 64, 251, 0.4);
-}
-
-.bgFloating {
-    position: absolute;
-    font-size: 40px;
-    opacity: 0.3;
-    animation: float 6s infinite ease-in-out;
-    pointer-events: none;
-    filter: blur(1px);
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0) rotate(0);
-    }
-
-    50% {
-        transform: translateY(-30px) rotate(15deg);
-    }
-}
-
+/* Responsive fixes */
 @media (max-width: 800px) {
-    .loginOverlay {
-        padding: 10px;
-        align-items: flex-start;
-        overflow-y: auto;
-    }
-
     .card {
-        height: auto;
-        min-height: auto;
-        padding-bottom: 80px;
-        /* Space for sticky button */
+        flex-direction: column;
+        height: 100vh;
         max-height: none;
         width: 100%;
-        border-radius: 25px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .splitLayout {
-        flex-direction: column;
+        border-radius: 0;
+        border: none;
     }
 
     .previewPane {
         flex: none;
-        height: 280px;
-        border-right: none;
-        border-bottom: 4px solid white;
-        border-radius: 25px 25px 0 0;
+        height: 35vh;
+        /* Smaller preview on mobile */
+        border-radius: 0 0 30px 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        border: none;
     }
 
     .controlsPane {
         padding: 20px;
-        gap: 15px;
+        overflow-y: visible;
+        /* Scroll happens in dashboardContainer */
+        flex: 1;
     }
 
-    .mainTitle {
-        font-size: 2.2rem;
-    }
-
-    .charGrid,
-    .hairGrid,
-    .faceGrid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
+    .dashboardContainer {
+        padding-bottom: 100px;
+        /* Space for fixed button */
     }
 
     .startBtn {
         position: fixed;
-        /* Sticky relative to viewport or absolute to card? Fixed is risky inside transform. Sticky is better but container needs overflow. Let's use Fixed at bottom of screen or card padding. */
-        /* Actually simpler: just make it big at bottom of flow */
-        width: calc(100% - 40px);
-        left: 20px;
         bottom: 20px;
-        z-index: 1001;
-        /* Above everything */
-        position: fixed;
+        left: 5%;
+        width: 90%;
         margin: 0;
+        z-index: 100;
+        font-size: 1.4rem;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(45deg, #FF4081, #7C4DFF);
+        border: 2px solid white;
     }
 }
+
 
 /* LIVE STATS */
 .liveStats {
