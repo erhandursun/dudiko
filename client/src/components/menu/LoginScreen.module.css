@@ -344,14 +344,16 @@
 @media (max-width: 800px) {
     .loginOverlay {
         padding: 0;
-        align-items: stretch;
+        align-items: flex-start;
         overflow: hidden;
-        /* Prevent body scroll, handle inside controls */
+        /* STRICTLY NO SCROLL */
+        position: fixed;
+        width: 100%;
+        height: 100%;
     }
 
     .card {
         height: 100dvh;
-        /* Modern viewport height */
         max-height: 100dvh;
         width: 100vw;
         border-radius: 0;
@@ -361,32 +363,40 @@
         flex-direction: column;
         padding-bottom: 0;
         box-shadow: none;
+        overflow: hidden;
+        /* Container itself shouldn't scroll */
     }
 
     .splitLayout {
         flex-direction: column;
         height: 100%;
+        width: 100%;
         overflow: hidden;
+        flex: 1;
     }
 
     .previewPane {
         flex: 0 0 35%;
-        /* Fixed percentage height */
         min-height: 200px;
         border-right: none;
         border-bottom: 2px solid white;
         border-radius: 0 0 30px 30px;
+        z-index: 2;
+        /* Ensure it stays on top */
     }
 
     .controlsPane {
         flex: 1;
-        padding: 15px 20px;
+        padding: 10px 15px;
+        /* Reduced padding */
         gap: 10px;
         overflow-y: auto;
-        /* Scroll ONLY controls if needed */
+        /* Internal scrolling only */
         display: flex;
         flex-direction: column;
         background: white;
+        -webkit-overflow-scrolling: touch;
+        /* Smooth scroll on iOS */
     }
 
     .brandingHeader {
@@ -394,69 +404,73 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-shrink: 0;
     }
 
     .mainTitle {
-        font-size: 1.5rem;
-        /* Smaller title */
+        font-size: 1.4rem;
         margin: 0;
     }
 
     .designerBadge {
-        font-size: 0.7rem;
-        padding: 2px 8px;
+        font-size: 0.6rem;
+        padding: 2px 6px;
         margin: 0;
     }
 
     .designerBadge span:first-child {
         display: none;
-        /* Hide 'Tasarımcı:' label on mobile to save space */
     }
 
     .liveStats {
         display: none;
-        /* HIDE stats on mobile to save vertical space */
     }
 
     .tabsContainer {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         padding: 4px;
         flex-shrink: 0;
+    }
+
+    .joinForm {
+        overflow-y: visible;
+        /* Let controlsPane handle scroll */
+        padding-right: 0;
+        padding-bottom: 20px;
+        /* Space for easier scrolling at bottom */
+    }
+
+    /* Start button stays at top, non-sticky to avoid layout issues */
+    .startBtn {
+        width: 100%;
+        margin-top: 5px;
+        position: static;
+        box-shadow: none;
+        padding: 12px;
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-bottom: 10px;
     }
 
     .charGrid,
     .hairGrid,
     .faceGrid {
         grid-template-columns: repeat(4, 1fr);
-        /* Denser grid */
-        gap: 6px;
+        gap: 5px;
     }
 
     .inputSection {
-        padding: 10px;
+        padding: 8px;
     }
 
     .charButton,
     .smallBtn {
-        padding: 5px;
-        font-size: 12px;
+        padding: 4px;
+        font-size: 11px;
     }
 
     .charIcon {
-        font-size: 18px;
-    }
-
-    .startBtn {
-        width: 100%;
-        margin-top: auto;
-        /* Push to bottom of container */
-        position: static;
-        box-shadow: none;
-        padding: 15px;
-        font-size: 1.1rem;
-        flex-shrink: 0;
-        margin-bottom: 10px;
-        /* Safety margin */
+        font-size: 16px;
     }
 }
 
