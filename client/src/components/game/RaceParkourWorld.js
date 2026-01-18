@@ -1,23 +1,62 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { RigidBody } from '@react-three/rapier';
 import { Float, Text, ContactShadows, Environment, Sparkles, MeshDistortMaterial } from '@react-three/drei';
 import { useSocketStore } from '@/stores/socketStore';
 import RemotePlayer from './RemotePlayer';
 import { SpeedGate, JumpPad } from './FunInteractions';
+import { useFrame } from '@react-three/fiber';
+import Fireworks from './Fireworks'; // Assuming Fireworks component exists or I will create/use standard particles
+
+function RotatingLasers() {
+    const groupRef = useRef();
+
+    useFrame((state) => {
+        const time = state.clock.getElapsedTime();
+        if (groupRef.current) {
+            // Rotate the entire hallway slightly or individual lasers
+            groupRef.current.children.forEach((child, i) => {
+                if (child.name === 'laser') {
+                    child.rotation.z = Math.sin(time * 2 + i) * 0.5 + (Math.PI / 2);
+                }
+            });
+        }
+    });
+
+    return (
+        <group ref={groupRef} position={[0, 20, -180]}>
+            <RigidBody type="fixed">
+                <mesh receiveShadow position={[0, -0.5, -25]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[15, 60]} />
+                    <meshStandardMaterial color="#0f172a" />
+                </mesh>
+            </RigidBody>
+            {[...Array(10)].map((_, i) => (
+                <group key={i} position={[0, 1, -i * 6]}>
+                    <mesh name="laser" position={[0, 2, 0]} rotation={[0, 0, Math.PI / 2]}>
+                        <cylinderGeometry args={[0.05, 0.05, 15]} />
+                        <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={5} />
+                    </mesh>
+                </group>
+            ))}
+            <Text position={[0, 5, -55]} fontSize={2} color="#fbbf24">
+                DİKKAT! LAZERLER ⚡
+            </Text>
+        </group>
+    );
+}
 
 export default function RaceParkourWorld() {
     const players = useSocketStore((state) => state.players);
     const playerId = useSocketStore((state) => state.playerId);
-    const [checkpoint, setCheckpoint] = useState(0);
 
     return (
         <group>
             {/* 1. Environment & Lighting */}
             <Environment preset="night" />
             <ContactShadows position={[0, -0.01, 0]} opacity={0.6} scale={100} blur={2} far={10} />
-            <Sparkles count={100} scale={50} size={2} speed={1} color="#38bdf8" />
+            <Sparkles count={200} scale={100} size={4} speed={0.4} opacity={0.5} color="#38bdf8" />
 
             {/* 2. THE STARTING LINE */}
             <group position={[0, 0, 0]}>
@@ -67,26 +106,8 @@ export default function RaceParkourWorld() {
                 ))}
             </group>
 
-            {/* Section C: Laser Hallway */}
-            <group position={[0, 20, -180]}>
-                <RigidBody type="fixed">
-                    <mesh receiveShadow position={[0, -0.5, -25]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[15, 60]} />
-                        <meshStandardMaterial color="#0f172a" />
-                    </mesh>
-                </RigidBody>
-                {[...Array(10)].map((_, i) => (
-                    <group key={i} position={[0, 1, -i * 6]}>
-                        <mesh position={[0, 2, 0]} rotation={[0, 0, Math.PI / 2]}>
-                            <cylinderGeometry args={[0.05, 0.05, 15]} />
-                            <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={5} />
-                        </mesh>
-                    </group>
-                ))}
-                <Text position={[0, 5, -55]} fontSize={2} color="#fbbf24">
-                    NEREDEYSE BİTTİ! 🚀
-                </Text>
-            </group>
+            {/* Section C: Rotating Laser Hallway */}
+            <RotatingLasers />
 
             {/* 4. THE FINISH LINE */}
             <group position={[0, 20, -250]}>
@@ -96,10 +117,21 @@ export default function RaceParkourWorld() {
                         <MeshDistortMaterial color="#10b981" speed={2} factor={0.5} />
                     </mesh>
                 </RigidBody>
-                <Text position={[0, 5, 0]} fontSize={3} color="#10b981" outlineWidth={0.2} outlineColor="white">
-                    TEBRİKLER! 🎉🏁
+
+                <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+                    <Text position={[0, 6, 0]} fontSize={3} color="#FFD700" outlineWidth={0.2} outlineColor="orange">
+                        🏆 ŞAMPİYON! 🏆
+                    </Text>
+                </Float>
+
+                <Text position={[0, 3, 0]} fontSize={1.5} color="white">
+                    Parkuru Tamamladın!
                 </Text>
-                <JumpPad position={[0, 0, 0]} /> {/* Bounce for victory */}
+
+                <JumpPad position={[0, 0, 5]} /> {/* Bounce for victory */}
+                <Fireworks position={[0, 10, -5]} />
+                <Fireworks position={[-10, 8, 0]} color="gold" />
+                <Fireworks position={[10, 8, 0]} color="cyan" />
             </group>
 
             {/* Remote Players */}

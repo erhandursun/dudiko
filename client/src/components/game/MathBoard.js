@@ -8,8 +8,9 @@ import { useSocketStore } from '@/stores/socketStore';
 export default function MathBoard({ position }) {
     const [isOpen, setIsOpen] = useState(false);
     const [question, setQuestion] = useState(generateQuestion());
-    const [answer, setAnswer] = useState('');
     const [message, setMessage] = useState('');
+    const [streak, setStreak] = useState(0); // New Streak State
+
     const reportMathSolved = useSocketStore((state) => state.reportMathSolved);
     const coins = useSocketStore((state) => state.coins);
 
@@ -40,14 +41,23 @@ export default function MathBoard({ position }) {
 
     const checkAnswer = (val) => {
         if (val === question.res) {
-            setMessage('DOĞRU! 🌟 +50 Puan');
-            reportMathSolved(50);
+            const newStreak = streak + 1;
+            setStreak(newStreak);
+
+            let winMsg = 'DOĞRU! 🌟';
+            if (newStreak > 2) winMsg = 'HARİKA! 🔥';
+            if (newStreak > 4) winMsg = 'EFSANE! 🚀';
+
+            setMessage(`${winMsg} +50 Puan`);
+            reportMathSolved(50 + (newStreak * 10)); // Bonus points for streak!
+
             setTimeout(() => {
                 setMessage('');
                 setQuestion(generateQuestion());
                 setIsOpen(false);
             }, 1500);
         } else {
+            setStreak(0); // Reset streak
             setMessage('Yeniden Dene! ❌');
         }
     };
@@ -87,6 +97,20 @@ export default function MathBoard({ position }) {
             >
                 BİL-KAZAN 💰
             </Text>
+
+            {/* Streak Indicator */}
+            {streak > 1 && (
+                <Text
+                    position={[1.5, 2.7, 0.15]}
+                    fontSize={0.3}
+                    color="#FFAB00"
+                    anchorX="center"
+                    anchorY="middle"
+                >
+                    🔥 x{streak}
+                </Text>
+            )}
+
             <Text
                 position={[0, 2, 0.15]}
                 fontSize={0.6}
@@ -151,7 +175,7 @@ export default function MathBoard({ position }) {
 
                         {message && (
                             <div style={{
-                                color: message.includes('DOĞRU') ? '#4CAF50' : '#F44336',
+                                color: message.includes('❌') ? '#F44336' : '#4CAF50',
                                 fontWeight: 'bold',
                                 fontSize: '18px',
                                 animation: 'pulse 0.5s infinite alternate'
