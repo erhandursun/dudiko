@@ -22,6 +22,7 @@ export default function EntranceHub() {
                     >
                         <div className={styles.cardImage} style={{ backgroundImage: 'url("https://images.remote.com/town_placeholder.jpg")' }}>
                             <div className={styles.badge}>KLASİK</div>
+                            <div className={styles.ageBadge}>7+ YAŞ</div>
                         </div>
                         <div className={styles.cardBody}>
                             <h3>Prenses Meydanı 🏰</h3>
@@ -37,6 +38,7 @@ export default function EntranceHub() {
                     >
                         <div className={styles.cardImage} style={{ backgroundImage: 'url("https://images.remote.com/school_placeholder.jpg")' }}>
                             <div className={styles.badgePremium}>PREMİUM</div>
+                            <div className={styles.ageBadge}>8-12 YAŞ</div>
                         </div>
                         <div className={styles.cardBody}>
                             <h3>Okul Oyunu 🎒</h3>
@@ -52,6 +54,7 @@ export default function EntranceHub() {
                     >
                         <div className={styles.cardImage} style={{ backgroundImage: 'url("https://images.remote.com/race_placeholder.jpg")' }}>
                             <div className={styles.badgePremium} style={{ background: '#38bdf8' }}>HIZLI</div>
+                            <div className={styles.ageBadge}>6+ YAŞ</div>
                         </div>
                         <div className={styles.cardBody}>
                             <h3>Yarış Parkuru 🏎️</h3>
@@ -67,14 +70,17 @@ export default function EntranceHub() {
                     >
                         <div className={styles.cardImage} style={{ backgroundImage: 'linear-gradient(45deg, #fbc2eb 0%, #a6c1ee 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '50px' }}>
                             🍭
-                            <div className={styles.badgePremium} style={{ background: '#e056fd' }}>YENİ</div>
+                            <div className={styles.badgePremium} style={{ background: '#e056fd' }}>ÖĞRETİCİ</div>
+                            <div className={styles.ageBadge}>5-8 YAŞ</div>
                         </div>
                         <div className={styles.cardBody}>
-                            <h3>Şeker Diyarı 🍬</h3>
-                            <p>Dev lolipoplar, çikolata ırmakları ve tatlı sürprizler!</p>
-                            <button className={styles.goBtnPremium} style={{ background: '#e056fd' }}>IŞINLAN 🧁</button>
+                            <h3>Şeker Diyarı & Alfabe 🍬</h3>
+                            <p>Hem eğlen hem öğren! Gizli harfleri bul ve kelimeleri tamamla.</p>
+                            <button className={styles.goBtnPremium} style={{ background: '#e056fd' }}>KELİME AVI 🅰️</button>
                         </div>
                     </div>
+
+
                 </div>
 
                 <div className={styles.footer}>

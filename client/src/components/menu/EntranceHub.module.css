@@ -67,7 +67,8 @@
 }
 
 .badge,
-.badgePremium {
+.badgePremium,
+.ageBadge {
     position: absolute;
     top: 15px;
     right: 15px;
@@ -76,6 +77,16 @@
     font-size: 0.8rem;
     font-weight: bold;
     color: white;
+}
+
+.ageBadge {
+    top: auto;
+    bottom: 15px;
+    right: auto;
+    left: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .badge {
