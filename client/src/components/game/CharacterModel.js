@@ -13,7 +13,9 @@ export default function CharacterModel({
     hairColor = "#3E2723",
     faceType = "happy",
     glassesType = "none", // none, round, sunglasses
-    hatType = "none" // none, cap, wizard
+    hatType = "none", // none, cap, wizard
+    backpackType = "none", // none, school, jetpack
+    wingsType = "none" // none, fairy, dragon
 }) {
 
     // Scale and Geometry logic based on type
@@ -235,6 +237,48 @@ export default function CharacterModel({
                 <cylinderGeometry args={[0.1, 0.1, 0.8]} />
                 <meshStandardMaterial color="#FFE0BD" />
             </mesh>
+
+            {/* BACKPACK */}
+            {backpackType === 'school' && (
+                <group position={[0, 1.2, -0.35]}>
+                    <boxGeometry args={[0.6, 0.7, 0.3]} />
+                    <meshStandardMaterial color="#FF5722" />
+                    {/* Straps */}
+                    <mesh position={[-0.2, 0.3, 0.2]}> <boxGeometry args={[0.1, 0.05, 0.4]} /> <meshStandardMaterial color="black" /> </mesh>
+                    <mesh position={[0.2, 0.3, 0.2]}> <boxGeometry args={[0.1, 0.05, 0.4]} /> <meshStandardMaterial color="black" /> </mesh>
+                </group>
+            )}
+            {backpackType === 'jetpack' && (
+                <group position={[0, 1.2, -0.35]}>
+                    <mesh position={[-0.2, 0, 0]}> <cylinderGeometry args={[0.15, 0.15, 0.8]} /> <meshStandardMaterial color="silver" /> </mesh>
+                    <mesh position={[0.2, 0, 0]}> <cylinderGeometry args={[0.15, 0.15, 0.8]} /> <meshStandardMaterial color="silver" /> </mesh>
+                    <mesh position={[0, 0.2, 0]}> <boxGeometry args={[0.6, 0.2, 0.2]} /> <meshStandardMaterial color="red" /> </mesh>
+                    {/* Flame emission effect could be added here if we had particles */}
+                </group>
+            )}
+
+            {/* WINGS */}
+            {wingsType === 'fairy' && (
+                <group position={[0, 1.2, -0.2]}>
+                    <mesh position={[-0.6, 0.4, 0]} rotation={[0.2, 0.4, 0.5]}> <boxGeometry args={[1.2, 0.6, 0.05]} /> <meshStandardMaterial color="cyan" transparent opacity={0.6} emissive="cyan" emissiveIntensity={0.5} /> </mesh>
+                    <mesh position={[0.6, 0.4, 0]} rotation={[0.2, -0.4, -0.5]}> <boxGeometry args={[1.2, 0.6, 0.05]} /> <meshStandardMaterial color="cyan" transparent opacity={0.6} emissive="cyan" emissiveIntensity={0.5} /> </mesh>
+                    <mesh position={[-0.4, -0.4, 0]} rotation={[-0.2, 0.4, -0.5]}> <boxGeometry args={[0.8, 0.4, 0.05]} /> <meshStandardMaterial color="violet" transparent opacity={0.6} emissive="violet" emissiveIntensity={0.5} /> </mesh>
+                    <mesh position={[0.4, -0.4, 0]} rotation={[-0.2, -0.4, 0.5]}> <boxGeometry args={[0.8, 0.4, 0.05]} /> <meshStandardMaterial color="violet" transparent opacity={0.6} emissive="violet" emissiveIntensity={0.5} /> </mesh>
+                </group>
+            )}
+            {wingsType === 'dragon' && (
+                <group position={[0, 1.2, -0.2]}>
+                    <mesh position={[-0.8, 0.4, 0]} rotation={[0.2, 0.4, 0.5]}>
+                        <bufferGeometry>
+                            <float32BufferAttribute attach="attributes-position" args={[new Float32Array([0, 0, 0, 1, 1, 0, 0, 1, 0]), 3]} />
+                        </bufferGeometry>
+                        {/* Simple triangle replacement for complex shape */}
+                        <boxGeometry args={[1.6, 0.8, 0.05]} />
+                        <meshStandardMaterial color="red" />
+                    </mesh>
+                    <mesh position={[0.8, 0.4, 0]} rotation={[0.2, -0.4, -0.5]}> <boxGeometry args={[1.6, 0.8, 0.05]} /> <meshStandardMaterial color="red" /> </mesh>
+                </group>
+            )}
         </group>
     );
 }

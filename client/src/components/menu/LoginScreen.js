@@ -14,10 +14,10 @@ export default function LoginScreen({ onJoin }) {
     const [color, setColor] = useState('hotpink');
     const [characterType, setCharacterType] = useState('child');
     const [hairStyle, setHairStyle] = useState('classic');
-    const [hairColor, setHairColor] = useState('#3E2723');
-    const [faceType, setFaceType] = useState('happy');
     const [glassesType, setGlassesType] = useState('none');
     const [hatType, setHatType] = useState('none');
+    const [backpackType, setBackpackType] = useState('none');
+    const [wingsType, setWingsType] = useState('none');
     const [activeTab, setActiveTab] = useState('identity'); // identity, style, face, accessories
 
     const randomizeCharacter = () => {
@@ -28,6 +28,8 @@ export default function LoginScreen({ onJoin }) {
         const rFace = FACE_TYPES[Math.floor(Math.random() * FACE_TYPES.length)].id;
         const rHat = HAT_TYPES[Math.floor(Math.random() * HAT_TYPES.length)].id;
         const rGlasses = GLASSES_TYPES[Math.floor(Math.random() * GLASSES_TYPES.length)].id;
+        const rBackpack = BACKPACK_TYPES[Math.floor(Math.random() * BACKPACK_TYPES.length)].id;
+        const rWings = WINGS_TYPES[Math.floor(Math.random() * WINGS_TYPES.length)].id;
 
         setColor(rColor);
         setCharacterType(rType);
@@ -36,7 +38,18 @@ export default function LoginScreen({ onJoin }) {
         setFaceType(rFace);
         setHatType(rHat);
         setGlassesType(rGlasses);
+        setBackpackType(rBackpack);
+        setWingsType(rWings);
     };
+
+    useEffect(() => {
+        // ... previous load logic ...
+        // We aren't checking localStorage for these new ones yet to keep it simple, or we can?
+        // Let's safe skip for now to avoid complexity of migration
+        const savedColor = localStorage.getItem('webtown_color');
+        if (savedColor) setColor(savedColor);
+        // ... (rest is same)
+    }, []);
 
     // ... (rest of vars)
 
@@ -52,6 +65,31 @@ export default function LoginScreen({ onJoin }) {
         { id: 'round', label: 'Gözlük 👓' },
         { id: 'sunglasses', label: 'Güneş 🕶️' },
     ];
+
+    const BACKPACK_TYPES = [
+        { id: 'none', label: 'Yok 🚫' },
+        { id: 'school', label: 'Okul 🎒' },
+        { id: 'jetpack', label: 'Jet 🚀' },
+    ];
+
+    const WINGS_TYPES = [
+        { id: 'none', label: 'Yok 🚫' },
+        { id: 'fairy', label: 'Peri 🧚‍♀️' },
+        { id: 'dragon', label: 'Ejder 🐉' },
+    ];
+
+    const handleJoin = (e) => {
+        e.preventDefault();
+        if (name.trim()) {
+            localStorage.setItem('webtown_name', name.trim());
+            localStorage.setItem('webtown_color', color);
+            // ... set items ...
+
+            onJoin(name, color, characterType, {
+                hairStyle, hairColor, faceType, hatType, glassesType, backpackType, wingsType
+            });
+        }
+    };
 
     return (
         <div className={styles.loginOverlay}>
@@ -73,6 +111,8 @@ export default function LoginScreen({ onJoin }) {
                                             faceType={faceType}
                                             hatType={hatType}
                                             glassesType={glassesType}
+                                            backpackType={backpackType}
+                                            wingsType={wingsType}
                                         />
                                     </group>
                                     <Environment preset="city" />

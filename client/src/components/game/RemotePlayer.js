@@ -131,19 +131,6 @@ export default function RemotePlayer({ position, rotation, color, isDriving, isD
                 )}
             </group>
 
-            {/* Wings for Remote Players (Magical Town Symmetery) */}
-            {(!isDriving && (characterType === 'mother' || characterType === 'father' || characterType === 'child' || characterType === 'baby')) && (
-                <group position={[0, 1.2, -0.3]}>
-                    <mesh position={[-0.6, 0.4, 0]} rotation={[0.2, 0.4, 0.5]}>
-                        <boxGeometry args={[1.2, 0.6, 0.1]} />
-                        <meshStandardMaterial color="cyan" transparent opacity={0.6} emissive="cyan" emissiveIntensity={0.5} />
-                    </mesh>
-                    <mesh position={[0.6, 0.4, 0]} rotation={[0.2, -0.4, -0.5]}>
-                        <boxGeometry args={[1.2, 0.6, 0.1]} />
-                        <meshStandardMaterial color="cyan" transparent opacity={0.6} emissive="cyan" emissiveIntensity={0.5} />
-                    </mesh>
-                </group>
-            )}
         </group>
     );
 }
