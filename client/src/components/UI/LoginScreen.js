@@ -12,7 +12,7 @@ export default function LoginScreen({ onJoin }) {
 
     const handleStart = () => {
         if (!name.trim()) {
-            setError('Lütfen ismini yaz tatlı prenses! ✨');
+            setError('Lütfen ismini yaz cesur kaşif! 🌍');
             return;
         }
         if (onJoin) {
@@ -51,10 +51,10 @@ export default function LoginScreen({ onJoin }) {
                 </div>
 
                 <h1 className="text-4xl font-black text-white mb-2 drop-shadow-lg tracking-tight">
-                    PRENSES DÜNYASI
+                    WEBTOWN MACERASI
                 </h1>
                 <p className="text-white/80 font-medium mb-8">
-                    Hayalindeki maceraya hazır mısın? ✨
+                    Kendi dünyanı kurmaya hazır mısın? 🚀
                 </p>
 
                 <div className="space-y-4">
