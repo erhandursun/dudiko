@@ -13,6 +13,7 @@ const io = new Server(server, {
 
 const players = {};
 const artworkCache = [];
+const chatHistory = []; // Buffer for persistent chat
 const houses = {}; // houseId: { ownerId, ownerName, color, rank }
 const xoxGames = {}; // xoxId: { board, turn, players }
 
@@ -129,11 +130,17 @@ io.on('connection', (socket) => {
 
     socket.on('chat', (message) => {
         if (players[socket.id]) {
-            io.emit('player-chat', {
+            const chatData = {
                 id: socket.id,
                 message,
-                name: players[socket.id].name
-            });
+                name: players[socket.id].name,
+                time: Date.now()
+            };
+
+            chatHistory.push(chatData);
+            if (chatHistory.length > 50) chatHistory.shift();
+
+            io.emit('player-chat', chatData);
         }
     });
 
@@ -266,6 +273,9 @@ io.on('connection', (socket) => {
 
     // Send existing art to new player
     socket.emit('load-art', artworkCache);
+
+    // Send chat history to new player
+    socket.emit('load-chat', chatHistory);
 
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);

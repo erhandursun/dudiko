@@ -14,10 +14,17 @@ export default function Chat() {
     useEffect(() => {
         if (!socket) return;
         const handleMessage = (data) => {
-            setHistory(prev => [...prev, { ...data, time: Date.now() }].slice(-50));
+            setHistory(prev => [...prev, { ...data }].slice(-50));
+        };
+        const handleLoadChat = (chatData) => {
+            setHistory(chatData);
         };
         socket.on('player-chat', handleMessage);
-        return () => socket.off('player-chat', handleMessage);
+        socket.on('load-chat', handleLoadChat);
+        return () => {
+            socket.off('player-chat', handleMessage);
+            socket.off('load-chat', handleLoadChat);
+        };
     }, [socket]);
 
     useEffect(() => {

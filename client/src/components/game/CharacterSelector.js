@@ -6,7 +6,8 @@ import styles from './CharacterSelector.module.css';
 const CHAR_TYPES = [
     { id: 'mother', icon: '👩', label: 'Anne' },
     { id: 'father', icon: '👨', label: 'Baba' },
-    { id: 'child', icon: '👧', label: 'Çocuk' },
+    { id: 'girl', icon: '👧', label: 'Kız Çocuk' },
+    { id: 'boy', icon: '👦', label: 'Erkek Çocuk' },
     { id: 'baby', icon: '👶', label: 'Bebek' },
     { id: 'cat', icon: '🐈', label: 'Kedi' },
     { id: 'dog', icon: '🐕', label: 'Köpek' },
