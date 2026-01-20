@@ -17,7 +17,8 @@ const WALK_SPEED = 5;
 const DRIVE_SPEED = 12;
 const JUMP_FORCE = 10;
 
-export default function PlayerController({ joystickData, buttonMove }) {
+export default function PlayerController() {
+    const joystickData = useSocketStore((state) => state.joystickData);
     const updateMyPosition = useSocketStore((state) => state.updateMyPosition);
     const currentWorld = useSocketStore((state) => state.currentWorld);
     const isDriving = useSocketStore((state) => state.isDriving);
@@ -63,14 +64,13 @@ export default function PlayerController({ joystickData, buttonMove }) {
 
         // --- INPUT HANDLING ---
         const { forward: kF, backward: kB, left: kL, right: kR, jump: keyboardJump } = getKeys();
-        const joystick = joystickData;
-        const b = buttonMove || {};
+        const joystick = joystickData || { x: 0, y: 0, jump: false, action: false };
 
-        const forward = kF || b.forward;
-        const backward = kB || b.backward;
-        const left = kL || b.left;
-        const right = kR || b.right;
-        const jump = keyboardJump || (joystick && joystick.jump);
+        const forward = kF;
+        const backward = kB;
+        const left = kL;
+        const right = kR;
+        const jump = keyboardJump || joystick.jump;
 
         // Get current velocity and position
         const linvel = rb.current.linvel();
@@ -81,7 +81,7 @@ export default function PlayerController({ joystickData, buttonMove }) {
         const sideVector = new THREE.Vector3((left ? 1 : 0) - (right ? 1 : 0), 0, 0);
 
         // Joystick Override
-        if (joystick && (joystick.x !== 0 || joystick.y !== 0)) {
+        if (joystick.x !== 0 || joystick.y !== 0) {
             frontVector.set(0, 0, joystick.y);
             sideVector.set(-joystick.x, 0, 0);
         }
@@ -103,7 +103,7 @@ export default function PlayerController({ joystickData, buttonMove }) {
         moveDir.addScaledVector(camDir, -frontVector.z);
         moveDir.addScaledVector(camRight, sideVector.x);
 
-        if (joystick && (joystick.x !== 0 || joystick.y !== 0)) {
+        if (joystick.x !== 0 || joystick.y !== 0) {
             moveDir.addScaledVector(camDir, -joystick.y);
             moveDir.addScaledVector(camRight, -joystick.x);
         }
@@ -143,25 +143,19 @@ export default function PlayerController({ joystickData, buttonMove }) {
         }
 
         // SHOOTING (Paintball)
-        if (b.shoot && (!lastUpdate.current || Date.now() - lastUpdate.current > 200)) { // 200ms cooldown (visual only here, logic separated)
-            // We use a separate cooldown for shooting to avoid spam
+        if (joystick.action && (!lastUpdate.current || Date.now() - lastUpdate.current > 200)) {
             if (!rb.current.userData) rb.current.userData = { lastShot: 0 };
             const now = Date.now();
             if (now - rb.current.userData.lastShot > 300) {
                 rb.current.userData.lastShot = now;
 
-                // Calculate forward direction
                 const playerPos = rb.current.translation();
-                // Use camera direction or player rotation
-                // If moving, use moveDir. If stationary, use player rotation if tracked, or camera?
-                // Let's use groupRef rotation which is snappy visual rotation.
                 let shootDir = new THREE.Vector3(0, 0, 1);
                 if (groupRef.current) {
                     shootDir.applyQuaternion(groupRef.current.quaternion);
                 }
                 shootDir.normalize();
 
-                // Slightly elevate origin so it doesn't hit the ground immediately
                 const origin = [playerPos.x, playerPos.y + 1.2, playerPos.z];
                 shoot(origin, [shootDir.x, shootDir.y, shootDir.z]);
             }

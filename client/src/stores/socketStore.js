@@ -24,6 +24,11 @@ export const useSocketStore = create((set, get) => ({
     currentWorld: 'hub', // hub, town, school
     disguiseProp: null, // 'tree', 'lamp', 'trash'
     notifications: [], // { id, message, type }
+    joystickData: { x: 0, y: 0, jump: false, action: false, aim: false },
+
+    setJoystickData: (data) => set((state) => ({
+        joystickData: typeof data === 'function' ? data(state.joystickData) : { ...state.joystickData, ...data }
+    })),
 
     setSocket: (socket) => set({ socket }),
 

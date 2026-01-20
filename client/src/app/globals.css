@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --primary: #E91E63;
   --primary-light: #F48FB1;
@@ -12,6 +16,10 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  user-select: none;
+  /* Prevent text selection during gameplay */
+  -webkit-tap-highlight-color: transparent;
+  /* Remove mobile tap highlight */
 }
 
 html,
@@ -20,27 +28,27 @@ body {
   overflow: hidden;
   height: 100%;
   width: 100%;
-  font-family: 'Outfit', 'Comic Sans MS', sans-serif;
+  font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  touch-action: none;
+  /* Disable default touch actions for game controls */
 }
 
 body {
-  background: #fdf2f8;
-  /* Soft pink background */
+  background: #000;
+  /* Dark background for canvas */
   color: #333;
 }
 
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow);
-  border-radius: 20px;
-}
+@layer components {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-xl;
+  }
 
-#joystick-wrapper {
-  position: absolute;
-  bottom: 40px;
-  right: 40px;
-  z-index: 100;
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl;
+  }
+
+  .btn-gradient {
+    @apply bg-gradient-to-r from-princess-pink to-princess-hot text-white shadow-lg transition-all active:scale-95;
+  }
 }

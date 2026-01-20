@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { useSocketStore } from '@/stores/socketStore';
-import LoginScreen from '@/components/menu/LoginScreen';
+import LoginScreen from '@/components/UI/LoginScreen';
 
 const GameSession = dynamic(() => import('@/components/game/GameSession'), { ssr: false });
 const EntranceHub = dynamic(() => import('@/components/menu/EntranceHub'), { ssr: false });

@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useCallback, Suspense } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { useState, Suspense } from 'react';
+import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import { KeyboardControls, Sky, PerspectiveCamera, Html } from '@react-three/drei';
-import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postprocessing';
+import { KeyboardControls, PerspectiveCamera } from '@react-three/drei';
+import { EffectComposer, Bloom, ToneMapping } from '@react-three/postprocessing';
 import { useSocketStore } from '@/stores/socketStore';
 
 import PlayerController from './PlayerController';
@@ -13,14 +13,9 @@ import SchoolWorld from './SchoolWorld';
 import RaceParkourWorld from './RaceParkourWorld';
 import CandyWorld from './CandyWorld';
 import DrawingBoard from './DrawingBoard';
-import Joystick from './Joystick';
-import PlayerList from './PlayerList';
-import MiniMap from './MiniMap';
-import Chat from './Chat';
-import VehicleToggle from './VehicleToggle';
-import OutfitSelector from './OutfitSelector';
-import MovementButtons from './MovementButtons';
-import Notifications from './Notifications';
+import PaintballGun from './PaintballGun';
+import Overlay from '../UI/Overlay';
+import MobileControls from '../UI/MobileControls';
 import * as THREE from 'three';
 
 const keyboardMap = [
@@ -31,15 +26,10 @@ const keyboardMap = [
     { name: 'jump', keys: ['Space'] },
 ];
 
-import PaintballGun from './PaintballGun';
-
 export default function GameSession() {
     const currentWorld = useSocketStore((state) => state.currentWorld);
-    const coins = useSocketStore((state) => state.coins);
     const houses = useSocketStore((state) => state.houses);
 
-    const [joystickData, setJoystickData] = useState(null);
-    const [buttonMove, setButtonMove] = useState(null);
     const [showDrawingBoard, setShowDrawingBoard] = useState(false);
     const [targetPlacement, setTargetPlacement] = useState(null);
 
@@ -59,18 +49,19 @@ export default function GameSession() {
 
     return (
         <KeyboardControls map={keyboardMap}>
-            <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+            <div className="relative w-full h-full bg-black">
 
+                {/* 3D ENGINE LAYER */}
                 <Canvas
                     shadows
                     gl={{
-                        antialias: false, // Performance boost for PostFX
+                        antialias: false,
                         stencil: false,
                         depth: true,
                     }}
                 >
                     <PerspectiveCamera makeDefault position={[0, 8, 20]} fov={50} />
-                    <Suspense fallback={<Html center><div style={{ color: 'white', whiteSpace: 'nowrap' }}>Yükleniyor... ✨</div></Html>}>
+                    <Suspense fallback={null}>
                         <Atmosphere world={currentWorld} />
 
                         <Physics gravity={[0, -30, 0]}>
@@ -80,140 +71,35 @@ export default function GameSession() {
                             {currentWorld === 'candy' && <CandyWorld />}
 
                             <PaintballGun />
-                            <PlayerController joystickData={joystickData} buttonMove={buttonMove} />
+                            <PlayerController />
                         </Physics>
 
-                        {/* Professional & Subtle Visual Stack */}
                         <EffectComposer disableNormalPass>
-                            <Bloom
-                                luminanceThreshold={1.1} // Only very bright things glow
-                                mipmapBlur
-                                intensity={0.5} // Much more subtle
-                                radius={0.3}
-                            />
+                            <Bloom luminanceThreshold={1.1} mipmapBlur intensity={0.5} radius={0.3} />
                             <ToneMapping mode={THREE.ACESFilmicToneMapping} />
                         </EffectComposer>
                     </Suspense>
                 </Canvas>
 
-                {/* UI Overlay */}
-                <div className="hud-layer" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                {/* MODERN UI LAYER (NEW) */}
+                <Overlay />
+                <MobileControls />
 
-                    {/* ACTION BUTTONS (Right Side) */}
-                    <div style={{ position: 'absolute', bottom: '120px', right: '30px', display: 'flex', flexDirection: 'column', gap: '15px', pointerEvents: 'auto' }}>
-                        {/* JUMP BUTTON */}
-                        <button
-                            onPointerDown={() => setJoystickData(prev => ({ ...prev, jump: true }))}
-                            onPointerUp={() => setJoystickData(prev => ({ ...prev, jump: false }))}
-                            className="hud-btn-jump"
-                            style={{
-                                width: '70px', height: '70px', borderRadius: '50%',
-                                background: 'rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(5px)',
-                                border: '2px solid rgba(255, 255, 255, 0.4)',
-                                fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                            }}
-                        >
-                            🦘
-                        </button>
-
-                        {/* SHOOT BUTTON (Paintball) */}
-                        <button
-                            onPointerDown={() => setButtonMove(prev => ({ ...prev, shoot: true }))}
-                            onPointerUp={() => setButtonMove(prev => ({ ...prev, shoot: false }))}
-                            className="hud-btn-shoot"
-                            style={{
-                                width: '70px', height: '70px', borderRadius: '50%',
-                                background: 'rgba(255, 0, 100, 0.3)', backdropFilter: 'blur(5px)',
-                                border: '2px solid rgba(255, 0, 100, 0.6)',
-                                fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                boxShadow: '0 0 15px rgba(255, 0, 100, 0.4)'
-                            }}
-                        >
-                            🔫
-                        </button>
-
-                        {/* HIDE BUTTON (Saklambaç) */}
-                        <button
-                            onClick={() => {
-                                const modes = ['tree', 'lamp', 'trash', null];
-                                const current = useSocketStore.getState().disguiseProp;
-                                const next = modes[(modes.indexOf(current) + 1) % modes.length];
-                                useSocketStore.getState().setDisguise(next);
-                            }}
-                            className="hud-btn-hide"
-                            style={{
-                                width: '70px', height: '70px', borderRadius: '50%',
-                                background: 'rgba(100, 255, 218, 0.3)', backdropFilter: 'blur(5px)',
-                                border: '2px solid rgba(100, 255, 218, 0.6)',
-                                fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                boxShadow: '0 0 15px rgba(100, 255, 218, 0.4)'
-                            }}
-                        >
-                            👻
-                        </button>
-                    </div>
-
-                    <div style={{ position: 'absolute', top: 20, left: 20, pointerEvents: 'auto' }}>
-                        <PlayerList />
-                    </div>
-
-                    <Notifications />
-
-                    <div style={{ position: 'absolute', top: '15px', right: '15px', display: 'flex', alignItems: 'center', gap: '8px', pointerEvents: 'none' }}>
-                        <button
-                            onClick={() => useSocketStore.getState().setWorld('hub')}
-                            className="glass-panel"
-                            style={{
-                                padding: '6px 12px', background: 'rgba(190, 24, 93, 0.7)',
-                                color: 'white', pointerEvents: 'auto', border: 'none',
-                                borderRadius: '15px', fontSize: '13px', fontWeight: 'bold'
-                            }}
-                        >
-                            ÇIKIŞ 🏠
-                        </button>
-                        <div className="glass-panel" style={{ padding: '4px 12px', color: '#FFD54F', fontWeight: 'bold', display: 'flex', gap: '5px', pointerEvents: 'auto' }}>
-                            💰 {coins}
-                        </div>
-                        <div style={{ pointerEvents: 'auto' }}> <MiniMap /> </div>
-                        <div className="glass-panel" style={{ padding: '4px 10px', color: '#ff85c0', fontSize: '12px', fontWeight: 'bold', pointerEvents: 'auto' }}>
-                            {currentWorld === 'school' ? '🏫 OKULDA' : currentWorld === 'race' ? '🏎️ PARKURDA' : currentWorld === 'candy' ? '🍭 ŞEKER DİYARI' : '🏰 KASABADA'}
-                        </div>
-                        <button onClick={() => setShowDrawingBoard(true)} className="glass-panel" style={{ padding: '8px', background: 'rgba(0,0,0,0.4)', color: 'white', pointerEvents: 'auto', border: 'none', borderRadius: '50%' }}>🎨</button>
-                    </div>
-
-                    <div style={{ position: 'absolute', bottom: 20, left: 20, display: 'flex', flexDirection: 'column', gap: '20px', pointerEvents: 'none' }}>
-                        <div style={{ pointerEvents: 'auto' }}> <MovementButtons onMove={setButtonMove} /> </div>
-                        <div style={{ pointerEvents: 'auto' }}> <Chat /> </div>
-                    </div>
-
-                    <div style={{ position: 'absolute', bottom: 20, right: '12%', pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-                        <button
-                            onPointerDown={() => setJoystickData({ ...joystickData, jump: true })}
-                            onPointerUp={() => setJoystickData({ ...joystickData, jump: false })}
-                            style={{ width: '60px', height: '60px', background: 'rgba(233, 30, 99, 0.6)', border: '3px solid white', borderRadius: '50%', color: 'white', fontWeight: 'bold' }}
-                        >UÇ!</button>
-                        <Joystick onMove={setJoystickData} />
-                    </div>
-
-                    <div style={{ position: 'absolute', top: '50%', right: '5%', transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', gap: '8px', pointerEvents: 'auto' }}>
-                        <VehicleToggle />
-                        <OutfitSelector />
-                    </div>
-
-                    {showDrawingBoard && (
-                        <DrawingBoard onClose={() => { setShowDrawingBoard(false); setTargetPlacement(null); }} targetPlacement={targetPlacement} />
-                    )}
-                </div>
+                {/* INTERACTIVE PANELS (Draw, Shop etc) */}
+                {showDrawingBoard && (
+                    <DrawingBoard
+                        onClose={() => { setShowDrawingBoard(false); setTargetPlacement(null); }}
+                        targetPlacement={targetPlacement}
+                    />
+                )}
             </div>
         </KeyboardControls>
     );
 }
 
 function Atmosphere({ world }) {
-    console.log('Atmosphere Rendering for world:', world);
     return (
         <>
-            <Sky sunPosition={[100, 100, 100]} turbidity={0.1} />
             <ambientLight intensity={world === 'school' ? 1.0 : 0.8} />
             <directionalLight
                 position={[50, 100, 50]}
