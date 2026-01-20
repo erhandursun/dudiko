@@ -8,30 +8,30 @@ const GAME_WORLDS = [
     {
         id: 'town',
         title: 'Kasaba Meydanı',
-        desc: 'Arkadaşlarınla buluş, sohbet et ve evi gez! 🏰',
-        img: 'https://images.unsplash.com/photo-1577741314755-048d8525d31e?q=80&w=1000&auto=format&fit=crop',
-        icon: <Gamepad2 size={24} className="text-blue-400" />
+        desc: 'Arkadaşlarınla buluş, sohbet et! 🏰',
+        gradient: 'from-blue-400 to-indigo-600',
+        icon: <Gamepad2 size={48} className="text-white/80" />
     },
     {
         id: 'school',
         title: 'Akademi',
-        desc: 'Matematik öğren, ders çalış ve zekanı geliştir! 🏫',
-        img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=1000&auto=format&fit=crop',
-        icon: <GraduationCap size={24} className="text-yellow-400" />
+        desc: 'Matematik öğren ve zekanı geliştir! 🏫',
+        gradient: 'from-yellow-400 to-orange-500',
+        icon: <GraduationCap size={48} className="text-white/80" />
     },
     {
         id: 'race',
         title: 'Yarış Parkuru',
-        desc: 'Arabana atla ve en hızlı sen ol! 🏎️',
-        img: 'https://images.unsplash.com/photo-1511994714008-b6d68a8b32a2?q=80&w=1000&auto=format&fit=crop',
-        icon: <Trophy size={24} className="text-red-400" />
+        desc: 'En hızlı sen ol! 🏎️',
+        gradient: 'from-red-500 to-pink-600',
+        icon: <Trophy size={48} className="text-white/80" />
     },
     {
         id: 'candy',
         title: 'Şeker Diyarı',
-        desc: 'Tatlılarla dolu bir dünyada kaybol! 🍭',
-        img: 'https://images.unsplash.com/photo-1520121401995-928cd50d4e27?q=80&w=1000&auto=format&fit=crop',
-        icon: <Candy size={24} className="text-pink-400" />
+        desc: 'Tatlı bir dünyada kaybol! 🍭',
+        gradient: 'from-pink-400 to-purple-500',
+        icon: <Candy size={48} className="text-white/80" />
     }
 ];
 
@@ -90,17 +90,17 @@ export default function LoginScreen({ onJoin }) {
                             <motion.div
                                 key={world.id}
                                 whileHover={{ scale: 1.05 }}
-                                className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden hover:border-white/50 transition-all cursor-pointer group"
+                                className={`bg-gradient-to-br ${world.gradient} border border-white/20 rounded-2xl overflow-hidden shadow-lg cursor-pointer group relative`}
                                 onClick={() => setSelectedDetail(world)}
                             >
-                                <div className="h-32 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
-                                    style={{ backgroundImage: `url(${world.img})` }}
-                                />
-                                <div className="p-4">
-                                    <div className="flex items-center gap-2 mb-1 font-bold text-lg text-white">
-                                        {world.icon} {world.title}
+                                <div className="h-24 flex items-center justify-center">
+                                    {world.icon}
+                                </div>
+                                <div className="p-4 bg-black/20 backdrop-blur-sm">
+                                    <div className="font-bold text-lg text-white mb-1">
+                                        {world.title}
                                     </div>
-                                    <p className="text-xs text-blue-100/70">{world.desc}</p>
+                                    <p className="text-xs text-white/80">{world.desc}</p>
                                 </div>
                             </motion.div>
                         ))}
