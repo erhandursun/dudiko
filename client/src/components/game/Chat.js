@@ -13,6 +13,10 @@ export default function Chat() {
 
     useEffect(() => {
         if (!socket) return;
+
+        // Request history explicitly on mount
+        socket.emit('get-chat-history');
+
         const handleMessage = (data) => {
             setHistory(prev => [...prev, { ...data }].slice(-50));
         };

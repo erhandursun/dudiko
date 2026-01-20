@@ -186,38 +186,53 @@ export default function PlayerController() {
             lastUpdate.current = now;
         }
 
-        // --- AUTO-FOLLOW CAMERA (SMOOTH BEHIND-THE-BACK) ---
+        // --- AUTO-FOLLOW CAMERA (SMOOTH BEHIND-THE-BACK WITH PERSISTENT ZOOM) ---
         const isMoving = (moveDir.length() > 0.01);
         if (isMoving && controlsRef.current) {
             // Get player's current visual rotation from groupRef
             if (groupRef.current) {
                 const playerRotationY = groupRef.current.rotation.y;
 
-                // Camera target distance (minDistance = 5)
-                const camDistance = controlsRef.current.getDistance();
+                // CRITICAL: Get CURRENT camera distance set by user (Zooms in/out)
+                // We do NOT override this distance.
+                const currentDist = controlsRef.current.getDistance();
 
-                // Calculate idealized "behind" position
-                // The character's forward is technically Z in its own space? 
-                // In useFrame, we set targetRotation = Math.atan2(moveDir.x, moveDir.z)
-                // So player is facing moveDir. We want camera to be at -moveDir * distance.
+                // Calculate idealized "behind" position relative to player
+                // If player rotates, we want camera to swing behind them
+                // But keeping the same distance the USER set
 
-                const idealOffset = new THREE.Vector3(0, 3, camDistance);
+                // Offset: High enough to see (y=currentDist * 0.4 approx for angle), Back = currentDist
+                // Actually, OrbitControls handles the spherical position if we just move the target?
+                // No, simply moving target moves camera equally.
+                // We want to ROTATE the camera around the target to be "behind".
+
+                // Simple vector math:
+                // Ideal Camera Pos = PlayerPos + (BackVector * Distance) + (UpVector * Height)
+                // Let's keep existing logic but use 'currentDist' for Z offset logic
+
+                // NOTE: 'idealOffset' is in local space (rotated later)
+                // Local Z is forward/backward. 
+                // We want camera BEHIND, so +Z in model space (assuming model faces -Z? no wait)
+
+                // In our previous logic:
+                // targetRotation = Math.atan2(moveDir.x, moveDir.z) -> Player faces MoveDir
+                // We want camera at MoveDir * -1 * currentDist
+
+                const idealOffset = new THREE.Vector3(0, Math.max(2, currentDist * 0.3), currentDist);
                 idealOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), playerRotationY);
 
-                const targetCamPos = translation.x + idealOffset.x;
                 const targetCamPosX = translation.x + idealOffset.x;
                 const targetCamPosY = translation.y + idealOffset.y;
                 const targetCamPosZ = translation.z + idealOffset.z;
 
-                // Smoothly interpolate camera position towards ideal spot
-                // But only if user isn't actively manual-rotating? 
-                // OrbitControls has a 'change' event or we can check mouse/touch delta.
-                // For simplicity, we just use a low lerp factor like 0.05
-
                 const currentCamPos = state.camera.position;
-                currentCamPos.x = THREE.MathUtils.lerp(currentCamPos.x, targetCamPosX, 0.05);
-                currentCamPos.y = THREE.MathUtils.lerp(currentCamPos.y, targetCamPosY, 0.05);
-                currentCamPos.z = THREE.MathUtils.lerp(currentCamPos.z, targetCamPosZ, 0.05);
+
+                // Smoothly lerp camera to the new position behind player
+                // Lower value = more lazy/cinematic, but higher = more responsive
+                // 0.02 is very smooth/loose.
+                currentCamPos.x = THREE.MathUtils.lerp(currentCamPos.x, targetCamPosX, 0.02);
+                currentCamPos.y = THREE.MathUtils.lerp(currentCamPos.y, targetCamPosY, 0.02);
+                currentCamPos.z = THREE.MathUtils.lerp(currentCamPos.z, targetCamPosZ, 0.02);
 
                 controlsRef.current.update();
             }
@@ -271,8 +286,8 @@ export default function PlayerController() {
                 enablePan={false}
                 enableDamping={true}
                 maxPolarAngle={Math.PI / 2 - 0.1} // Don't go below ground
-                minDistance={5}
-                maxDistance={20}
+                minDistance={12}
+                maxDistance={40}
             />
 
             {/* VISUALS */}

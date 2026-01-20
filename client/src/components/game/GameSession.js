@@ -16,6 +16,7 @@ import DrawingBoard from './DrawingBoard';
 import PaintballGun from './PaintballGun';
 import Overlay from '../UI/Overlay';
 import MobileControls from '../UI/MobileControls';
+import PlayerList from './PlayerList';
 import * as THREE from 'three';
 
 const keyboardMap = [
@@ -85,6 +86,7 @@ export default function GameSession() {
                 {/* MODERN UI LAYER (NEW) */}
                 <Overlay />
                 <MobileControls />
+                <PlayerList />
 
                 {/* INTERACTIVE PANELS (Draw, Shop etc) */}
                 {showDrawingBoard && (

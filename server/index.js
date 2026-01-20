@@ -17,6 +17,24 @@ const chatHistory = []; // Buffer for persistent chat
 const houses = {}; // houseId: { ownerId, ownerName, color, rank }
 const xoxGames = {}; // xoxId: { board, turn, players }
 
+// Gift System
+let gifts = [];
+let giftIdCounter = 0;
+// Spawn a gift every 30 seconds
+setInterval(() => {
+    if (gifts.length < 10) {
+        // Random position in Town (approx -30 to 30 range)
+        const x = (Math.random() - 0.5) * 60;
+        const z = (Math.random() - 0.5) * 60;
+        const newGift = {
+            id: ++giftIdCounter,
+            position: [x, 1, z]
+        };
+        gifts.push(newGift);
+        io.emit('new-gift', newGift);
+    }
+}, 30000);
+
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
     console.log('Total players:', Object.keys(players).length + 1);
@@ -275,7 +293,34 @@ io.on('connection', (socket) => {
     socket.emit('load-art', artworkCache);
 
     // Send chat history to new player
+    // Also respond to explicit request
     socket.emit('load-chat', chatHistory);
+    socket.on('get-chat-history', () => {
+        socket.emit('load-chat', chatHistory);
+    });
+
+    socket.on('get-gifts', () => {
+        socket.emit('load-gifts', gifts);
+    });
+
+    socket.on('collect-gift', (giftId) => {
+        const index = gifts.findIndex(g => g.id === giftId);
+        if (index !== -1) {
+            gifts.splice(index, 1);
+
+            // Add coins/points to player
+            if (players[socket.id]) {
+                players[socket.id].mathPoints = (players[socket.id].mathPoints || 0) + 50;
+                // Notify user
+                io.to(socket.id).emit('math-solved-notification', { // Reuse exist notification or create new
+                    name: "Sürpriz!",
+                    points: 50
+                });
+            }
+
+            io.emit('gift-collected', giftId);
+        }
+    });
 
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);

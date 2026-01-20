@@ -5,10 +5,14 @@ import { motion } from 'framer-motion';
 import { useSocketStore } from '@/stores/socketStore';
 import { Castle, School, Trophy, Cookie, Sparkles, LogOut } from 'lucide-react';
 
+import CharacterSelector from '@/components/game/CharacterSelector';
+import OutfitSelector from '@/components/game/OutfitSelector';
+
 export default function EntranceHub() {
     const setWorld = useSocketStore((state) => state.setWorld);
     const myName = useSocketStore((state) => state.myName);
     const disconnect = useSocketStore((state) => state.disconnect);
+    const [showFashionModal, setShowFashionModel] = React.useState(false);
 
     const worlds = [
         {
@@ -123,22 +127,66 @@ export default function EntranceHub() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8 }}
-                    className="mt-16 p-8 glass rounded-[40px] flex flex-col md:flex-row items-center justify-between gap-6 border-2 border-white"
+                    className="mt-16 p-8 glass rounded-[40px] flex flex-col md:flex-row items-center justify-between gap-6 border-2 border-white cursor-pointer hover:scale-[1.02] transition-transform active:scale-95"
+                    onClick={() => setShowFashionModel(true)}
                 >
                     <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-princess-pink to-princess-gold flex items-center justify-center text-white text-3xl">
+                        <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-princess-pink to-princess-gold flex items-center justify-center text-white text-3xl shadow-lg ring-4 ring-white/30">
                             👑
                         </div>
                         <div>
                             <h4 className="text-2xl font-black text-princess-hot">Moda Tasarımcısı</h4>
-                            <p className="text-princess-hot/50 font-bold italic">Oyunun içinde kıyafetlerini değiştirmeyi unutma!</p>
+                            <p className="text-princess-hot/50 font-bold italic">Kıyafetini ve tarzını değiştirmek için tıkla!</p>
                         </div>
                     </div>
                     <div className="flex gap-4">
-                        <div className="p-4 bg-white/50 rounded-2xl border border-white">✨ Parıltılı Saçlar</div>
-                        <div className="p-4 bg-white/50 rounded-2xl border border-white">👗 Yeni Elbiseler</div>
+                        <div className="p-4 bg-white/50 rounded-2xl border border-white font-bold text-princess-hot/70">✨ Parıltılı Saçlar</div>
+                        <div className="p-4 bg-white/50 rounded-2xl border border-white font-bold text-princess-hot/70">👗 Yeni Elbiseler</div>
                     </div>
                 </motion.div>
+
+                {/* Fashion Designer Modal */}
+                {showFashionModal && (
+                    <div className="fixed inset-0 z-[900] bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="bg-white rounded-[40px] p-8 max-w-2xl w-full shadow-2xl relative border-4 border-princess-pink"
+                        >
+                            <button
+                                onClick={() => setShowFashionModel(false)}
+                                className="absolute top-4 right-4 bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors"
+                            >
+                                <LogOut size={20} className="text-gray-500" />
+                            </button>
+
+                            <h2 className="text-3xl font-black text-center text-princess-hot mb-8">✨ Moda Stüdyosu ✨</h2>
+
+                            <div className="grid md:grid-cols-2 gap-8">
+                                <div className="space-y-4">
+                                    <h3 className="text-xl font-bold text-gray-700">Karakterini Seç</h3>
+                                    <div className="bg-gray-50 p-4 rounded-3xl">
+                                        <CharacterSelector />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h3 className="text-xl font-bold text-gray-700">Rengini Seç</h3>
+                                    <div className="bg-gray-50 p-4 rounded-3xl">
+                                        <OutfitSelector />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => setShowFashionModel(false)}
+                                className="w-full mt-8 bg-gradient-to-r from-princess-pink to-princess-gold text-white font-black text-xl py-4 rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition-all"
+                            >
+                                HARİKA GÖRÜNÜYORUM! 💖
+                            </button>
+                        </motion.div>
+                    </div>
+                )}
 
                 {/* Footer */}
                 <div className="mt-12 text-center text-princess-hot/30 text-xs font-black uppercase tracking-[4px]">
