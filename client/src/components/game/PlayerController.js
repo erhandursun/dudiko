@@ -186,28 +186,40 @@ export default function PlayerController() {
             lastUpdate.current = now;
         }
 
-        // --- AUTO-FOLLOW CAMERA (Mobile Orientation Aid - Smoothened) ---
-        const isMobileMoving = (joystick && (joystick.x !== 0 || joystick.y !== 0));
-        if (isMobileMoving && controlsRef.current) {
-            const camPos = state.camera.position.clone();
-            const targetPos = new THREE.Vector3(translation.x, translation.y + 1.5, translation.z);
-            const toPlayer = new THREE.Vector3().subVectors(targetPos, camPos);
-            toPlayer.y = 0;
-            toPlayer.normalize();
-
+        // --- AUTO-FOLLOW CAMERA (SMOOTH BEHIND-THE-BACK) ---
+        const isMoving = (moveDir.length() > 0.01);
+        if (isMoving && controlsRef.current) {
+            // Get player's current visual rotation from groupRef
             if (groupRef.current) {
-                const playerDirection = new THREE.Vector3(0, 0, 1).applyQuaternion(groupRef.current.quaternion);
-                playerDirection.y = 0;
-                playerDirection.normalize();
+                const playerRotationY = groupRef.current.rotation.y;
 
-                const angleDiff = toPlayer.angleTo(playerDirection);
-                if (angleDiff > 0.05) {
-                    const cross = new THREE.Vector3().crossVectors(toPlayer, playerDirection);
-                    const dirScale = cross.y > 0 ? 1 : -1;
-                    // Faster but smoother rotation towards player direction
-                    const rotationSpeed = delta * 2.5;
-                    state.camera.position.applyQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), dirScale * rotationSpeed));
-                }
+                // Camera target distance (minDistance = 5)
+                const camDistance = controlsRef.current.getDistance();
+
+                // Calculate idealized "behind" position
+                // The character's forward is technically Z in its own space? 
+                // In useFrame, we set targetRotation = Math.atan2(moveDir.x, moveDir.z)
+                // So player is facing moveDir. We want camera to be at -moveDir * distance.
+
+                const idealOffset = new THREE.Vector3(0, 3, camDistance);
+                idealOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), playerRotationY);
+
+                const targetCamPos = translation.x + idealOffset.x;
+                const targetCamPosX = translation.x + idealOffset.x;
+                const targetCamPosY = translation.y + idealOffset.y;
+                const targetCamPosZ = translation.z + idealOffset.z;
+
+                // Smoothly interpolate camera position towards ideal spot
+                // But only if user isn't actively manual-rotating? 
+                // OrbitControls has a 'change' event or we can check mouse/touch delta.
+                // For simplicity, we just use a low lerp factor like 0.05
+
+                const currentCamPos = state.camera.position;
+                currentCamPos.x = THREE.MathUtils.lerp(currentCamPos.x, targetCamPosX, 0.05);
+                currentCamPos.y = THREE.MathUtils.lerp(currentCamPos.y, targetCamPosY, 0.05);
+                currentCamPos.z = THREE.MathUtils.lerp(currentCamPos.z, targetCamPosZ, 0.05);
+
+                controlsRef.current.update();
             }
         }
 
