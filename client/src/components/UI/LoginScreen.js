@@ -5,17 +5,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSocketStore } from '@/stores/socketStore';
 import { Sparkles, Play, Maximize2, User } from 'lucide-react';
 
-export default function LoginScreen() {
+export default function LoginScreen({ onJoin }) {
     const [name, setName] = useState('');
     const [error, setError] = useState('');
-    const joinGame = useSocketStore((state) => state.joinGame);
+    // const joinGame = useSocketStore((state) => state.joinGame); // Handled by parent
 
     const handleStart = () => {
         if (!name.trim()) {
             setError('Lütfen ismini yaz tatlı prenses! ✨');
             return;
         }
-        joinGame(name.trim(), '#ff85c0'); // Default pink color
+        if (onJoin) {
+            onJoin(name.trim(), '#ff85c0'); // Default pink color
+        }
     };
 
     const toggleFullscreen = () => {
