@@ -11,25 +11,25 @@ export default function MobileControls() {
     const [stickPos, setStickPos] = useState({ x: 0, y: 0 });
 
     // Joystick Logic - FIXED ZONE MODE
-    const fixedOrigin = { x: 144, y: window.innerHeight - 144 }; // Matches bottom-12 left-12 (48px*3 + offset?) - Let's calculate: bottom-12 is 3rem=48px. w-48 is 12rem=192px. Center is 48px + 192/2 = 144px.
-    // Actually safe to just use dynamic checks or simplified logic.
+    // Zone is at bottom-12 (48px) left-12 (48px). Width 48 (192px).
+    // Center X = 48 + 192/2 = 144.
+    // Center Y = window.innerHeight - (48 + 192/2) = window.innerHeight - 144.
 
     const handleTouchStart = (e) => {
-        const touch = e.touches[0];
-        // Check if touch is roughly within the joystick zone (bottom-left)
-        // Zone center approx: x=100, y=ScreenHeight-100. Radius ~100.
-        const zoneCenterRx = 100;
-        const zoneCenterRy = window.innerHeight - 100;
-        const dist = Math.sqrt(Math.pow(touch.clientX - zoneCenterRx, 2) + Math.pow(touch.clientY - zoneCenterRy, 2));
+        // Prevent default to stop scrolling/zooming/selection behaviors
+        // e.preventDefault(); // React synthetic events might not need this if touch-action is none
 
-        if (dist < 150) { // Generous hit area
-            setStickOrigin({ x: zoneCenterRx, y: zoneCenterRy });
-            // No need to set StickPos here, it will update on move
-        }
+        const zoneCenterX = 144;
+        const zoneCenterY = window.innerHeight - 144;
+
+        setStickOrigin({ x: zoneCenterX, y: zoneCenterY });
+        // Start tracking
     };
 
     const handleTouchMove = useCallback((e) => {
         if (!stickOrigin) return;
+        // We use the first touch changed or targettouches? 
+        // Window listener gives us all touches. We just grab the first one.
         const touch = e.touches[0];
 
         // Calculate raw delta from Center
@@ -51,8 +51,6 @@ export default function MobileControls() {
             y: finalY / maxDist
         });
     }, [stickOrigin, setJoystickData]);
-
-
 
     const handleTouchEnd = useCallback(() => {
         setStickOrigin(null);
@@ -77,21 +75,23 @@ export default function MobileControls() {
     return (
         <div
             className="fixed inset-0 z-[500] pointer-events-none select-none touch-none"
-            onTouchStart={handleTouchStart}
         >
-            {/* FIXED JOYSTICK ZONE */}
-            <div className="absolute bottom-12 left-12 w-48 h-48 rounded-full border-4 border-white/10 bg-white/5 flex items-center justify-center pointer-events-none">
+            {/* FIXED JOYSTICK ZONE - INTERACTIVE */}
+            <div
+                className="absolute bottom-12 left-12 w-48 h-48 rounded-full border-4 border-white/10 bg-white/5 flex items-center justify-center pointer-events-auto touch-none"
+                onTouchStart={handleTouchStart}
+            >
                 <div className="w-2 h-2 rounded-full bg-white/30" />
             </div>
 
-            {/* ACTIVE JOYSTICK */}
+            {/* ACTIVE JOYSTICK VISUAL */}
             <AnimatePresence>
                 {stickOrigin && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.5 }}
-                        className="absolute w-32 h-32 rounded-full border-4 border-blue-400/50 bg-blue-500/20 backdrop-blur-md flex items-center justify-center translate-x-[-50%] translate-y-[-50%]"
+                        className="absolute w-32 h-32 rounded-full border-4 border-blue-400/50 bg-blue-500/20 backdrop-blur-md flex items-center justify-center translate-x-[-50%] translate-y-[-50%] pointer-events-none"
                         style={{ left: stickOrigin.x, top: stickOrigin.y }}
                     >
                         <motion.div
