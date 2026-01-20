@@ -97,7 +97,7 @@ export default function LoginScreen() {
                 </div>
 
                 <div className="mt-8 text-white/40 text-xs font-medium uppercase tracking-[3px]">
-                    v3.1 Ultra Engine 🚀
+                    v3.1.2 Ultra Engine 🚀
                 </div>
             </motion.div>
 

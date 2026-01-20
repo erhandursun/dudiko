@@ -211,7 +211,7 @@ export default function LoginScreen({ onJoin }) {
                     {/* Right: Controls */}
                     <div className={styles.controlsPane}>
                         <div className={styles.brandingHeader}>
-                            <h1 className={styles.mainTitle}>DUDIKO.COM <span style={{ fontSize: '12px', color: '#666', fontWeight: 'normal' }}>v1.1</span></h1>
+                            <h1 className={styles.title}>DUDIKO.COM <span className={styles.badge}>v3.1.2</span></h1>
                             <div className={styles.designerBadge}>
                                 <span>Tasarımcı: </span>
                                 <span className={styles.designerName}>Elif (8 Yaşında) 👩‍🎨</span>

@@ -143,7 +143,7 @@ export default function EntranceHub() {
 
                 {/* Footer */}
                 <div className="mt-12 text-center text-princess-hot/30 text-xs font-black uppercase tracking-[4px]">
-                    v3.1 Ultra Engine Powered by Elif Duha 🚀
+                    v3.1.2 Ultra Engine Powered by Elif Duha 🚀
                 </div>
             </div>
         </div>
