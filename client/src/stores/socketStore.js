@@ -430,7 +430,21 @@ export const useSocketStore = create((set, get) => ({
         }
     },
 
-    // REMOVED: buyPet (Purged Feature)
+    buyPet: (type, price) => {
+        const { coins } = get();
+        if (coins >= price) {
+            set({ coins: coins - price, petType: type });
+            return true;
+        }
+        return false;
+    },
+
+    makeXOXMove: (boardId, index, playerSymbol) => {
+        const { socket } = get();
+        if (socket) {
+            socket.emit('xox-move', { boardId, index, playerSymbol });
+        }
+    },
 
     reportMathSolved: (points) => {
         const { socket } = get();

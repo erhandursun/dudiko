@@ -38,12 +38,10 @@ export default function PlayerController() {
     const groupRef = useRef(); // For animation
     const [, getKeys] = useKeyboardControls();
     const socket = useSocketStore((state) => state.socket);
-    const cameraRef = useRef(); // To store the camera object from useFrame
 
     // Animation State trackers
     const prevIsDriving = useRef(isDriving);
-    const lastUpdate = useRef(0);
-    const controlsRef = useRef();
+    const [stickPos, setStickPos] = useState({ x: 0, y: 0 });
 
     // Reset position on world change
     useEffect(() => {
@@ -188,7 +186,7 @@ export default function PlayerController() {
         }
 
         // --- AUTO-FOLLOW CAMERA (Mobile Orientation Aid - Smoothened) ---
-        const isMobileMoving = (joystick && (joystick.x !== 0 || joystick.y !== 0)) || (b.forward || b.backward || b.left || b.right);
+        const isMobileMoving = (joystick && (joystick.x !== 0 || joystick.y !== 0));
         if (isMobileMoving && controlsRef.current) {
             const camPos = state.camera.position.clone();
             const targetPos = new THREE.Vector3(translation.x, translation.y + 1.5, translation.z);
