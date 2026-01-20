@@ -13,37 +13,37 @@ export default function EntranceHub() {
     const worlds = [
         {
             id: 'town',
-            name: 'Prenses Meydanı',
-            icon: <Castle className="text-princess-pink" size={32} />,
+            name: 'Kasaba Meydanı',
+            icon: <Castle className="text-white" size={48} />,
             desc: 'Evlerini gez, arkadaşlarınla buluş ve kasabanın tadını çıkar!',
-            img: 'https://images.unsplash.com/photo-1612152605332-2e11798d1a8e?q=80&w=1000&auto=format&fit=crop',
+            gradient: 'from-blue-400 to-indigo-600',
             age: '7+ YAŞ',
             type: 'KLASİK'
         },
         {
             id: 'school',
-            name: 'Prenses Akademisi',
-            icon: <School className="text-blue-500" size={32} />,
+            name: 'Akademi',
+            icon: <School className="text-white" size={48} />,
             desc: 'Matematik, İngilizce ve Okuma sınıflarında öğren ve eğlen!',
-            img: 'https://plus.unsplash.com/premium_photo-1683408267597-154dfdd1c944?q=80&w=1000&auto=format&fit=crop',
+            gradient: 'from-orange-400 to-pink-500',
             age: '8-12 YAŞ',
             type: 'PREMİUM'
         },
         {
             id: 'race',
             name: 'Yarış Parkuru',
-            icon: <Trophy className="text-princess-gold" size={32} />,
+            icon: <Trophy className="text-white" size={48} />,
             desc: 'Engelleri aş, en hızlı sen ol ve parkuru tamamla!',
-            img: 'https://images.unsplash.com/photo-1513810576352-78d2b376c6E6?q=80&w=1000&auto=format&fit=crop',
+            gradient: 'from-red-500 to-rose-600',
             age: '6+ YAŞ',
             type: 'HIZLI'
         },
         {
             id: 'candy',
             name: 'Şeker Diyarı',
-            icon: <Cookie className="text-purple-500" size={32} />,
+            icon: <Cookie className="text-white" size={48} />,
             desc: 'Gizli harfleri bul ve kelimeleri tamamlayarak puan topla!',
-            img: 'https://images.unsplash.com/photo-1533467457999-7f975764d783?q=80&w=1000&auto=format&fit=crop',
+            gradient: 'from-purple-400 to-fuchsia-600',
             age: '5-8 YAŞ',
             type: 'ÖĞRETİCİ'
         }
@@ -84,34 +84,33 @@ export default function EntranceHub() {
                             onClick={() => setWorld(world.id)}
                             className="group cursor-pointer"
                         >
-                            <div className="relative h-64 rounded-[32px] overflow-hidden shadow-2xl transition-transform group-hover:scale-[1.02]">
-                                <img src={world.img} className="w-full h-full object-cover" alt={world.name} />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                            <div className={`relative h-64 rounded-[32px] overflow-hidden shadow-2xl transition-transform group-hover:scale-[1.02] bg-gradient-to-br ${world.gradient}`}>
+                                {/* Decorative Circles */}
+                                <div className="absolute top-[-20%] right-[-20%] w-48 h-48 rounded-full bg-white/10 blur-3xl" />
+                                <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full bg-black/10 blur-xl" />
 
                                 <div className="absolute top-4 left-4 flex gap-2">
-                                    <span className="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black text-princess-hot uppercase tracking-wider">
+                                    <span className="bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black text-black/70 uppercase tracking-wider">
                                         {world.type}
                                     </span>
-                                    <span className="bg-princess-gold px-3 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-wider">
+                                    <span className="bg-black/20 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
                                         {world.age}
                                     </span>
                                 </div>
 
-                                <div className="absolute bottom-6 left-6 right-6">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <div className="p-2 bg-white rounded-xl shadow-lg">
-                                            {world.icon}
-                                        </div>
-                                        <h3 className="text-xl font-black text-white drop-shadow-md">{world.name}</h3>
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 pt-12">
+                                    <div className="p-4 bg-white/20 backdrop-blur-md rounded-2xl shadow-lg mb-4 text-white">
+                                        {world.icon}
                                     </div>
-                                    <p className="text-white/70 text-sm font-medium leading-snug line-clamp-2">
+                                    <h3 className="text-2xl font-black text-white drop-shadow-md mb-2">{world.name}</h3>
+                                    <p className="text-white/90 text-sm font-bold leading-snug line-clamp-2 max-w-[200px]">
                                         {world.desc}
                                     </p>
                                 </div>
 
-                                <div className="absolute inset-0 bg-princess-pink/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <div className="bg-white px-8 py-3 rounded-2xl text-princess-pink font-black text-lg shadow-xl translate-y-4 group-hover:translate-y-0 transition-transform">
-                                        GİRİŞ YAP ✨
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                                    <div className="bg-white px-8 py-3 rounded-2xl text-black font-black text-lg shadow-xl translate-y-4 group-hover:translate-y-0 transition-transform">
+                                        GİRİŞ YAP 🚀
                                     </div>
                                 </div>
                             </div>

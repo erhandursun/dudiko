@@ -61,6 +61,7 @@ export default function GameSession() {
                     }}
                 >
                     <PerspectiveCamera makeDefault position={[0, 8, 20]} fov={50} />
+                    <color attach="background" args={['#87CEEB']} /> {/* Fix black sky */}
                     <Suspense fallback={null}>
                         <Atmosphere world={currentWorld} />
 

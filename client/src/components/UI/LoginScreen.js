@@ -70,44 +70,7 @@ export default function LoginScreen({ onJoin }) {
 
             <div className="relative z-10 w-full max-w-6xl p-4 md:p-8 flex flex-col md:flex-row gap-8 items-center justify-center min-h-screen">
 
-                {/* LEFT: Game Showcase */}
-                <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="flex-1 w-full max-w-2xl"
-                >
-                    <div className="text-center md:text-left mb-8">
-                        <h1 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 drop-shadow-lg mb-2">
-                            DUDİKO MACERASI
-                        </h1>
-                        <p className="text-xl text-blue-200 font-medium opacity-90">
-                            Keşfet, Öğren, Oyna ve Arkadaşlarınla Eğlen! 🚀
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {GAME_WORLDS.map((world, idx) => (
-                            <motion.div
-                                key={world.id}
-                                whileHover={{ scale: 1.05 }}
-                                className={`bg-gradient-to-br ${world.gradient} border border-white/20 rounded-2xl overflow-hidden shadow-lg cursor-pointer group relative`}
-                                onClick={() => setSelectedDetail(world)}
-                            >
-                                <div className="h-24 flex items-center justify-center">
-                                    {world.icon}
-                                </div>
-                                <div className="p-4 bg-black/20 backdrop-blur-sm">
-                                    <div className="font-bold text-lg text-white mb-1">
-                                        {world.title}
-                                    </div>
-                                    <p className="text-xs text-white/80">{world.desc}</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </motion.div>
-
-                {/* RIGHT: Login Panel */}
+                {/* CENTERED Login Panel */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
