@@ -50,6 +50,26 @@ export const useSocketStore = create((set, get) => ({
         newSocket.on('connect', () => {
             console.log('Connected to server with ID:', newSocket.id);
             set({ playerId: newSocket.id });
+
+            // RECONNECTION LOGIC:
+            // If we already have a name/color (meaning we were playing), re-sync with server.
+            const { myName, myColor, characterType, customization, isDriving, currentWorld } = get();
+
+            // We assume if myName is not the default 'Prenses' or we have joined, we should sync.
+            // A flag 'hasJoined' would be better, but checking name/world is a decent proxy.
+            if (myName && currentWorld) {
+                console.log('Re-syncing player state after connection...', { myName, currentWorld });
+
+                newSocket.emit('init-player', {
+                    name: myName,
+                    color: myColor,
+                    characterType,
+                    customization,
+                    isDriving
+                });
+
+                newSocket.emit('switch-world', currentWorld);
+            }
         });
 
         // Listeners are now attached via useEffect in components or here if global

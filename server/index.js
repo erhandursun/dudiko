@@ -40,6 +40,7 @@ io.on('connection', (socket) => {
 
     // Client sends their preferred initial state
     socket.on('init-player', ({ color, isDriving, name, characterType, customization }) => {
+        console.log(`Player initialized: ${name} (${socket.id})`);
         if (players[socket.id]) {
             players[socket.id].color = color;
             players[socket.id].isDriving = isDriving;
@@ -62,6 +63,7 @@ io.on('connection', (socket) => {
     // we might need a fallback. For now, this is fine as client emits on connect.
 
     socket.on('switch-world', (world) => {
+        console.log(`Player ${socket.id} switching to world: ${world}`);
         if (players[socket.id]) {
             players[socket.id].currentWorld = world;
             io.emit('player-updated', {
