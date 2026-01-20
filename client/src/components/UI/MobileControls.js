@@ -15,7 +15,16 @@ export default function MobileControls() {
         const touch = e.touches[0];
         // Only trigger on Left Half of screen
         if (touch.clientX < window.innerWidth / 2) {
-            setStickOrigin({ x: touch.clientX, y: touch.clientY });
+            // Clamp Position to avoid clipping
+            const padding = 70; // Half of joystick size + margin
+            let originX = touch.clientX;
+            let originY = touch.clientY;
+
+            if (originX < padding) originX = padding;
+            if (originY < padding) originY = padding;
+            if (originY > window.innerHeight - padding) originY = window.innerHeight - padding;
+
+            setStickOrigin({ x: originX, y: originY });
             setStickPos({ x: 0, y: 0 });
         }
     };

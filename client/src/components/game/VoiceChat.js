@@ -169,7 +169,7 @@ export default function VoiceChat({ myPosRef }) {
 
     return (
         <Html fullscreen style={{ pointerEvents: 'none' }}>
-            <div style={{ position: 'absolute', top: 120, left: 20, pointerEvents: 'auto' }}>
+            <div style={{ position: 'absolute', top: 100, right: 20, pointerEvents: 'auto' }}>
                 {!joined ? (
                     <button
                         onClick={joinVoice}

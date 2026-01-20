@@ -107,7 +107,7 @@ export default function Overlay() {
                         exit={{ height: 0, opacity: 0 }}
                         className="pointer-events-auto glass-dark mx-auto w-full max-w-xl mb-4 rounded-[30px] overflow-hidden flex flex-col"
                     >
-                        <div className="p-4 border-b border-white/10 text-white font-bold text-center">Maceracı Sohbet ✨</div>
+                        <div className="p-4 border-b border-white/10 text-white font-bold text-center">Dudiko Sohbet ✨</div>
                         <Chat />
                     </motion.div>
                 )}
