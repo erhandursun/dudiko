@@ -9,7 +9,6 @@ export default function MobileControls() {
     const setJoystickData = useSocketStore((state) => state.setJoystickData);
     const [stickOrigin, setStickOrigin] = useState(null);
     const [stickPos, setStickPos] = useState({ x: 0, y: 0 });
-    const joystickRef = useRef(null);
 
     // Joystick Logic
     const handleTouchStart = (e) => {

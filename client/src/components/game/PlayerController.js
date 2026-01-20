@@ -41,7 +41,8 @@ export default function PlayerController() {
 
     // Animation State trackers
     const prevIsDriving = useRef(isDriving);
-    const [stickPos, setStickPos] = useState({ x: 0, y: 0 });
+    const lastUpdate = useRef(0);
+    const controlsRef = useRef();
 
     // Reset position on world change
     useEffect(() => {
