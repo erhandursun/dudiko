@@ -21,7 +21,7 @@ export default function EntranceHub() {
                         onClick={() => setWorld('town')}
                     >
                         <div className={styles.cardImage} style={{
-                            backgroundImage: 'url("https://images.unsplash.com/photo-1577083288073-40892c0860a4?q=80&w=1000&auto=format&fit=crop")',
+                            backgroundImage: 'url("https://images.unsplash.com/photo-1612152605332-2e11798d1a8e?q=80&w=1000&auto=format&fit=crop")', // Toy/Cartoon Town
                             backgroundSize: 'cover',
                             backgroundPosition: 'center'
                         }}>
@@ -41,7 +41,7 @@ export default function EntranceHub() {
                         onClick={() => setWorld('school')}
                     >
                         <div className={styles.cardImage} style={{
-                            backgroundImage: 'url("https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1000&auto=format&fit=crop")',
+                            backgroundImage: 'url("https://plus.unsplash.com/premium_photo-1683408267597-154dfdd1c944?q=80&w=1000&auto=format&fit=crop")', // Colorful School/Playground
                             backgroundSize: 'cover',
                             backgroundPosition: 'center'
                         }}>
@@ -49,8 +49,8 @@ export default function EntranceHub() {
                             <div className={styles.ageBadge}>8-12 YAŞ</div>
                         </div>
                         <div className={styles.cardBody}>
-                            <h3>Okul Oyunu 🎒</h3>
-                            <p>Sınıfa gir, ders çalış ve büyülü okulun gizemlerini keşfet!</p>
+                            <h3>Prenses Akademisi 🏫</h3>
+                            <p>Matematik, İngilizce ve Okuma sınıflarında öğren ve eğlen!</p>
                             <button className={styles.goBtnPremium}>DERSE GİT 📚</button>
                         </div>
                     </div>
@@ -61,7 +61,7 @@ export default function EntranceHub() {
                         onClick={() => setWorld('race')}
                     >
                         <div className={styles.cardImage} style={{
-                            backgroundImage: 'url("https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1000&auto=format&fit=crop")',
+                            backgroundImage: 'url("https://images.unsplash.com/photo-1513810576352-78d2b376c6E6?q=80&w=1000&auto=format&fit=crop")', // Colorful Abstract/Race
                             backgroundSize: 'cover',
                             backgroundPosition: 'center'
                         }}>
@@ -81,7 +81,7 @@ export default function EntranceHub() {
                         onClick={() => setWorld('candy')}
                     >
                         <div className={styles.cardImage} style={{
-                            backgroundImage: 'url("https://images.unsplash.com/photo-1565071552827-8dpsbyl1-w4?q=80&w=1000&auto=format&fit=crop")', // Candy/Pastel theme
+                            backgroundImage: 'url("https://images.unsplash.com/photo-1533467457999-7f975764d783?q=80&w=1000&auto=format&fit=crop")', // Candy Land / Colorful 3D
                             backgroundSize: 'cover',
                             backgroundPosition: 'center'
                         }}>
@@ -94,8 +94,6 @@ export default function EntranceHub() {
                             <button className={styles.goBtnPremium} style={{ background: '#e056fd' }}>KELİME AVI 🅰️</button>
                         </div>
                     </div>
-
-
                 </div>
 
                 <div className={styles.footer}>

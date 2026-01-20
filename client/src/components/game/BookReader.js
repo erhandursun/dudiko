@@ -1,83 +1,109 @@
-import React from 'react';
-import { Html } from '@react-three/drei';
+'use client';
 
-export default function BookReader({ book, onClose }) {
-    if (!book) return null;
+import React, { useState } from 'react';
+import { Html, Text } from '@react-three/drei';
+import { RigidBody } from '@react-three/rapier';
+
+const STORIES = [
+    {
+        title: "Minik Yıldız",
+        pages: [
+            "Bir varmış, bir yokmuş. Gökyüzünde parlayan minik bir yıldız varmış. ✨",
+            "Bu minik yıldız, diğer büyük yıldızlar gibi parlamak istiyormuş ama ışığı azmış.",
+            "Bir gün Ay Dede ona gülümsemiş: 'Senin ışığın küçük olabilir ama kalbin kocaman!' demiş.",
+            "Minik yıldız çok sevinmiş. O günden sonra mutlulukla parlamış ve tüm çocuklara iyi geceler dilemiş. 🌙"
+        ]
+    }
+];
+
+export default function BookReader({ position, rotation }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [page, setPage] = useState(0);
+
+    const handleNext = () => {
+        if (page < STORIES[0].pages.length - 1) {
+            setPage(page + 1);
+        } else {
+            setIsOpen(false);
+            setPage(0);
+        }
+    };
 
     return (
-        <Html center zIndexRange={[100, 0]}>
-            <div style={{
-                width: '400px',
-                height: '500px',
-                backgroundColor: '#fff',
-                backgroundImage: 'linear-gradient(to right, #f8f8f8 0%, #fff 10%, #fff 90%, #f8f8f8 100%)', // Book spine effect
-                borderRadius: '10px 20px 20px 10px',
-                boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
-                padding: '40px',
-                fontFamily: "'Comic Sans MS', 'Chalkboard SE', sans-serif",
-                display: 'flex',
-                flexDirection: 'column',
-                position: 'relative',
-                border: '10px solid #8D6E63', // Leather cover look
-                overflow: 'hidden'
-            }}>
-                {/* Header */}
-                <div style={{
-                    textAlign: 'center',
-                    marginBottom: '20px',
-                    borderBottom: '2px dashed #ccc',
-                    paddingBottom: '10px'
-                }}>
-                    <h2 style={{ margin: 0, color: '#D84315', fontSize: '24px' }}>{book.title}</h2>
-                </div>
+        <group position={position} rotation={rotation}>
+            {/* Bookshelf Model */}
+            <RigidBody type="fixed" colliders="hull">
+                <mesh castShadow onClick={() => setIsOpen(true)}>
+                    <boxGeometry args={[4, 6, 1.5]} />
+                    <meshStandardMaterial color="#8D6E63" />
+                </mesh>
+                {/* Shelves */}
+                {[...Array(3)].map((_, i) => (
+                    <mesh key={i} position={[0, (i - 1) * 1.5, 0.2]}>
+                        <boxGeometry args={[3.6, 0.1, 1.3]} />
+                        <meshStandardMaterial color="#5D4037" />
+                    </mesh>
+                ))}
+                {/* Books */}
+                <group position={[-1.2, 0.2, 0.4]}>
+                    <mesh position={[0, 0.3, 0]} castShadow>
+                        <boxGeometry args={[0.2, 0.6, 0.8]} />
+                        <meshStandardMaterial color="red" />
+                    </mesh>
+                    <mesh position={[0.3, 0.3, 0]} castShadow>
+                        <boxGeometry args={[0.2, 0.5, 0.8]} />
+                        <meshStandardMaterial color="blue" />
+                    </mesh>
+                    <mesh position={[0.6, 0.3, 0]} castShadow>
+                        <boxGeometry args={[0.2, 0.7, 0.8]} />
+                        <meshStandardMaterial color="green" />
+                    </mesh>
+                </group>
+            </RigidBody>
 
-                {/* Content */}
-                <div style={{
-                    flex: 1,
-                    fontSize: '18px',
-                    lineHeight: '1.6',
-                    color: '#333',
-                    overflowY: 'auto',
-                    textAlign: 'justify'
-                }}>
-                    {book.content}
-                </div>
+            <Text position={[0, 3.5, 0]} fontSize={0.5} color="gold">MASAL OKU 📖</Text>
 
-                {/* Footer / Close */}
-                <div style={{
-                    marginTop: '20px',
-                    textAlign: 'center'
-                }}>
-                    <button
-                        onClick={onClose}
-                        style={{
-                            padding: '10px 30px',
-                            fontSize: '16px',
-                            fontWeight: 'bold',
-                            color: 'white',
-                            backgroundColor: '#4CAF50',
-                            border: 'none',
-                            borderRadius: '25px',
-                            cursor: 'pointer',
-                            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                        }}
-                    >
-                        BİTİRDİM! ✅
-                    </button>
-                </div>
+            {/* Reading Modal */}
+            {isOpen && (
+                <Html position={[0, 2, 0.5]} transform distanceFactor={6}>
+                    <div style={{
+                        background: '#FFF3E0',
+                        padding: '30px',
+                        borderRadius: '10px',
+                        width: '400px',
+                        height: '300px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        border: '10px solid #5D4037',
+                        boxShadow: '10px 10px 20px rgba(0,0,0,0.5)',
+                        fontFamily: 'serif'
+                    }}>
+                        <h2 style={{ textAlign: 'center', color: '#E65100', margin: 0 }}>{STORIES[0].title}</h2>
 
-                {/* Decorative Corner */}
-                <div style={{
-                    position: 'absolute',
-                    top: '0',
-                    right: '0',
-                    width: '0',
-                    height: '0',
-                    borderStyle: 'solid',
-                    borderWidth: '0 50px 50px 0',
-                    borderColor: 'transparent #E0E0E0 transparent transparent'
-                }} />
-            </div>
-        </Html>
+                        <p style={{ fontSize: '20px', lineHeight: '1.5', textAlign: 'center', color: '#3E2723' }}>
+                            {STORIES[0].pages[page]}
+                        </p>
+
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <button
+                                onClick={handleNext}
+                                style={{
+                                    padding: '10px 20px',
+                                    fontSize: '16px',
+                                    background: '#8D6E63',
+                                    color: 'white',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    borderRadius: '5px'
+                                }}
+                            >
+                                {page < STORIES[0].pages.length - 1 ? "Sonraki Sayfa ➡️" : "Bitir ✨"}
+                            </button>
+                        </div>
+                    </div>
+                </Html>
+            )}
+        </group>
     );
 }
