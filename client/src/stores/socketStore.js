@@ -10,7 +10,7 @@ export const useSocketStore = create((set, get) => ({
     flightUnlocked: true,
     artworks: [],
     myColor: 'hotpink',
-    myName: 'Prenses',
+    myName: 'Prenses v3.1',
     characterType: 'child',
     coins: 10000,
     mathPoints: 0,
