@@ -74,14 +74,14 @@ export default function MobileControls() {
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.5 }}
-                        className="absolute w-32 h-32 rounded-full border-4 border-white/20 bg-white/10 backdrop-blur-sm flex items-center justify-center translate-x-[-50%] translate-y-[-50%]"
+                        className="absolute w-32 h-32 rounded-full border-4 border-white/50 bg-white/30 backdrop-blur-md flex items-center justify-center translate-x-[-50%] translate-y-[-50%]"
                         style={{ left: stickOrigin.x, top: stickOrigin.y }}
                     >
                         <motion.div
-                            className="w-16 h-16 rounded-full bg-white shadow-xl shadow-princess-pink/30 flex items-center justify-center border-2 border-princess-pink/40"
+                            className="w-16 h-16 rounded-full bg-white shadow-2xl flex items-center justify-center border-4 border-blue-400"
                             style={{ x: stickPos.x, y: stickPos.y }}
                         >
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-princess-pink to-princess-hot opacity-40 animate-pulse" />
+                            <div className="w-10 h-10 rounded-full bg-blue-500 opacity-80" />
                         </motion.div>
                     </motion.div>
                 )}
