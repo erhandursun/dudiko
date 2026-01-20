@@ -51,7 +51,6 @@ export default function TeacherDesk({ position, text = "Öğretmen" }) {
                     color="black"
                     anchorX="center"
                     anchorY="middle"
-                    font="/fonts/Inter-Bold.woff" // Ensure font availability or fallback
                 >
                     {text}
                 </Text>
