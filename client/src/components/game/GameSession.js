@@ -12,6 +12,7 @@ import TownWorld from './TownWorld';
 import SchoolWorld from './SchoolWorld';
 import RaceParkourWorld from './RaceParkourWorld';
 import CandyWorld from './CandyWorld';
+import LibraryRaceWorld from './LibraryRaceWorld';
 import DrawingBoard from './DrawingBoard';
 import PaintballGun from './PaintballGun';
 import Overlay from '../UI/Overlay';
@@ -71,6 +72,7 @@ export default function GameSession() {
                             {currentWorld === 'school' && <SchoolWorld />}
                             {currentWorld === 'race' && <RaceParkourWorld />}
                             {currentWorld === 'candy' && <CandyWorld />}
+                            {currentWorld === 'library-race' && <LibraryRaceWorld />}
 
                             <PaintballGun />
                             <PlayerController />

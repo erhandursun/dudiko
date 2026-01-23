@@ -50,6 +50,15 @@ export default function EntranceHub() {
             gradient: 'from-purple-400 to-fuchsia-600',
             age: '5-8 YAŞ',
             type: 'ÖĞRETİCİ'
+        },
+        {
+            id: 'library-race',
+            name: 'Kütüphane Yarışı',
+            icon: <Sparkles className="text-white" size={48} />,
+            desc: 'Kitaplıklar arasında yarış ve yükselen balonları patlat!',
+            gradient: 'from-emerald-400 to-teal-600',
+            age: '7+ YAŞ',
+            type: 'YENİ'
         }
     ];
 
@@ -78,7 +87,7 @@ export default function EntranceHub() {
                 </div>
 
                 {/* World Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {worlds.map((world, idx) => (
                         <motion.div
                             key={world.id}
