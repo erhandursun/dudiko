@@ -9,6 +9,7 @@ import GameContainer from '@/components/portal/GameContainer';
 import { GAME_REGISTRY } from '@/registry/games';
 
 const BalloonEater = dynamic(() => import('@/games/BalloonEater/BalloonEater'), { ssr: false });
+const VoxelWorld = dynamic(() => import('@/games/VoxelWorld/VoxelWorld'), { ssr: false });
 // Other games will be added here as they are implemented
 
 export default function Home() {
@@ -41,7 +42,9 @@ export default function Home() {
         switch (activeGameId) {
             case 'balloon-eater':
                 return <BalloonEater />;
-            // Add more cases here (Snake, Voxel World, etc.)
+            case 'voxel-world':
+                return <VoxelWorld />;
+            // Add more cases here (Snake, etc.)
             default:
                 return <div className="text-white p-20 text-center font-black">BU OYUN HENÜZ GELİŞTİRİLME AŞAMASINDA... 🛠️</div>;
         }
