@@ -46,6 +46,34 @@ function Ground() {
     );
 }
 
+function Food({ position, color }: { position: THREE.Vector3; color: string }) {
+    return (
+        <mesh position={position}>
+            <sphereGeometry args={[0.3, 16, 16]} />
+            <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1} />
+        </mesh>
+    );
+}
+
+function Gift({ position }: { position: THREE.Vector3 }) {
+    return (
+        <Float speed={3} rotationIntensity={3}>
+            <mesh position={position} castShadow>
+                <boxGeometry args={[0.8, 0.8, 0.8]} />
+                <meshStandardMaterial color="#f43f5e" metalness={0.8} roughness={0.1} />
+                <mesh scale={[1.1, 0.2, 1.1]}>
+                    <boxGeometry args={[0.8, 0.8, 0.8]} />
+                    <meshStandardMaterial color="#fbbf24" metalness={1} />
+                </mesh>
+                <mesh scale={[0.2, 1.1, 1.1]}>
+                    <boxGeometry args={[0.8, 0.8, 0.8]} />
+                    <meshStandardMaterial color="#fbbf24" metalness={1} />
+                </mesh>
+            </mesh>
+        </Float>
+    );
+}
+
 // --- MAIN GAME ENGINE ---
 function GameEngine({
     joystick,
