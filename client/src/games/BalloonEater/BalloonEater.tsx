@@ -1,129 +1,121 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TouchController from '../../components/mobile/TouchController';
 
-interface Player {
+interface Entity {
     id: string;
     x: number;
     y: number;
     radius: number;
     color: string;
-    name: string;
-}
-
-interface Food {
-    id: string;
-    x: number;
-    y: number;
-    radius: number;
-    color: string;
+    name?: string;
 }
 
 export default function BalloonEater() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [player, setPlayer] = useState<Player>({
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // Game State in Refs for 60fps stability
+    const playerRef = useRef<Entity>({
         id: 'me',
         x: 0,
         y: 0,
         radius: 20,
         color: '#22d3ee',
-        name: 'Player 1'
+        name: 'Sen'
     });
 
-    const [foods, setFoods] = useState<Food[]>([]);
-    const [joystick, setJoystick] = useState({ x: 0, y: 0 });
+    const foodsRef = useRef<Entity[]>([]);
+    const joystickRef = useRef({ x: 0, y: 0 });
+    const keysRef = useRef<Record<string, boolean>>({});
     const requestRef = useRef<number | null>(null);
-    const worldSize = 2000;
 
-    // Initialize Food
+    // React State only for HUD
+    const [score, setScore] = useState(0);
+    const worldSize = 3000;
+
     useEffect(() => {
-        const initialFood: Food[] = Array.from({ length: 100 }).map((_, i) => ({
+        console.log("BalloonEater: Initializing Game Engine...");
+
+        // Spawn initial food
+        const colors = ['#f87171', '#4ade80', '#60a5fa', '#fbbf24', '#c084fc', '#2dd4bf'];
+        foodsRef.current = Array.from({ length: 150 }).map((_, i) => ({
             id: `food-${i}`,
             x: (Math.random() - 0.5) * worldSize,
             y: (Math.random() - 0.5) * worldSize,
-            radius: 5 + Math.random() * 5,
-            color: `hsl(${Math.random() * 360}, 70%, 60%)`
+            radius: 4 + Math.random() * 6,
+            color: colors[Math.floor(Math.random() * colors.length)]
         }));
-        setFoods(initialFood);
-    }, []);
 
-    const update = useCallback((time: number) => {
-        setPlayer(prev => {
-            const speed = 5 * (20 / prev.radius); // Slow down as you grow
-            const newX = Math.max(-worldSize / 2, Math.min(worldSize / 2, prev.x + joystick.x * speed));
-            const newY = Math.max(-worldSize / 2, Math.min(worldSize / 2, prev.y - joystick.y * speed));
+        const handleKeyDown = (e: KeyboardEvent) => { keysRef.current[e.code] = true; };
+        const handleKeyUp = (e: KeyboardEvent) => { keysRef.current[e.code] = false; };
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
 
-            // Basic food collision
-            setFoods(currentFood => {
-                let collided = false;
-                const remaining = currentFood.filter(f => {
-                    const dist = Math.hypot(newX - f.x, newY - f.y);
-                    if (dist < prev.radius) {
-                        collided = true;
-                        return false;
-                    }
-                    return true;
-                });
+        const gameLoop = () => {
+            const player = playerRef.current;
+            const joystick = joystickRef.current;
+            const keys = keysRef.current;
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
 
-                if (collided) {
-                    // Respawn some food
-                    if (remaining.length < 100) {
-                        remaining.push({
-                            id: `food-${Date.now()}`,
-                            x: (Math.random() - 0.5) * worldSize,
-                            y: (Math.random() - 0.5) * worldSize,
-                            radius: 5 + Math.random() * 5,
-                            color: `hsl(${Math.random() * 360}, 70%, 60%)`
-                        });
-                    }
-                    // Increase player size slightly
-                    prev.radius += 0.5;
+            // 1. Update Physics
+            let moveX = joystick.x;
+            let moveY = -joystick.y;
+
+            if (keys['ArrowLeft'] || keys['KeyA']) moveX = -1;
+            if (keys['ArrowRight'] || keys['KeyD']) moveX = 1;
+            if (keys['ArrowUp'] || keys['KeyW']) moveY = -1;
+            if (keys['ArrowDown'] || keys['KeyS']) moveY = 1;
+
+            const speed = 6 * (20 / player.radius); // Balance speed vs size
+            player.x = Math.max(-worldSize / 2, Math.min(worldSize / 2, player.x + moveX * speed));
+            player.y = Math.max(-worldSize / 2, Math.min(worldSize / 2, player.y + moveY * speed));
+
+            // Collision Detection
+            let collided = false;
+            foodsRef.current = foodsRef.current.filter(f => {
+                const dist = Math.hypot(player.x - f.x, player.y - f.y);
+                if (dist < player.radius) {
+                    collided = true;
+                    return false;
                 }
-                return remaining;
+                return true;
             });
 
-            return { ...prev, x: newX, y: newY };
-        });
+            if (collided) {
+                player.radius += 0.2;
+                setScore(Math.floor((player.radius - 20) * 10));
 
-        requestRef.current = requestAnimationFrame(update);
-    }, [joystick]);
-
-    useEffect(() => {
-        requestRef.current = requestAnimationFrame(update);
-        return () => {
-            if (requestRef.current !== null) {
-                cancelAnimationFrame(requestRef.current);
+                // Replenish food
+                while (foodsRef.current.length < 150) {
+                    foodsRef.current.push({
+                        id: `food-${Date.now()}-${Math.random()}`,
+                        x: (Math.random() - 0.5) * worldSize,
+                        y: (Math.random() - 0.5) * worldSize,
+                        radius: 4 + Math.random() * 6,
+                        color: colors[Math.floor(Math.random() * colors.length)]
+                    });
+                }
             }
-        };
-    }, [update]);
 
-    // Canvas Rendering
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        const handleResize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-
-        const draw = () => {
-            if (!ctx) return;
+            // 2. Render
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Camera follow
             ctx.save();
             ctx.translate(canvas.width / 2 - player.x, canvas.height / 2 - player.y);
+
+            // Draw Bounds
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 10;
+            ctx.strokeRect(-worldSize / 2, -worldSize / 2, worldSize, worldSize);
 
             // Draw Grid
             ctx.strokeStyle = '#1e293b';
             ctx.lineWidth = 1;
-            for (let i = -worldSize / 2; i <= worldSize / 2; i += 100) {
+            for (let i = -worldSize / 2; i <= worldSize / 2; i += 200) {
                 ctx.beginPath();
                 ctx.moveTo(i, -worldSize / 2);
                 ctx.lineTo(i, worldSize / 2);
@@ -135,52 +127,72 @@ export default function BalloonEater() {
             }
 
             // Draw Food
-            foods.forEach(f => {
+            foodsRef.current.forEach(f => {
                 ctx.fillStyle = f.color;
                 ctx.beginPath();
                 ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
                 ctx.fill();
-                // Glow
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = f.color;
-                ctx.fill();
             });
 
             // Draw Player
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = player.color;
             ctx.fillStyle = player.color;
             ctx.beginPath();
             ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
             ctx.fill();
+            ctx.shadowBlur = 0;
 
-            // Player Name Tag
+            // Player Label
             ctx.fillStyle = 'white';
-            ctx.font = 'bold 12px Inter';
+            ctx.font = 'bold 14px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(player.name, player.x, player.y - player.radius - 10);
+            ctx.fillText(player.name || '', player.x, player.y - player.radius - 12);
 
             ctx.restore();
-            requestAnimationFrame(draw);
+            requestRef.current = requestAnimationFrame(gameLoop);
         };
 
-        const animId = requestAnimationFrame(draw);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            cancelAnimationFrame(animId);
+        const handleResize = () => {
+            if (canvasRef.current) {
+                canvasRef.current.width = window.innerWidth;
+                canvasRef.current.height = window.innerHeight;
+            }
         };
-    }, [player, foods]);
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        requestRef.current = requestAnimationFrame(gameLoop);
+
+        return () => {
+            console.log("BalloonEater: Cleaning up...");
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keyup', handleKeyUp);
+            window.removeEventListener('resize', handleResize);
+            if (requestRef.current) cancelAnimationFrame(requestRef.current);
+        };
+    }, []);
 
     return (
-        <div className="relative w-full h-full overflow-hidden bg-[#0a0a0f]">
+        <div ref={containerRef} className="relative w-full h-full overflow-hidden bg-[#020617]">
             <canvas ref={canvasRef} className="block" />
 
-            {/* HUD Overlay */}
-            <div className="absolute top-4 left-4 p-4 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl pointer-events-none">
-                <div className="text-cyan-400 font-black text-xs uppercase tracking-widest mb-1">SCORE</div>
-                <div className="text-white text-2xl font-black">{Math.floor(player.radius - 20) * 10}</div>
+            {/* Minimal HUD */}
+            <div className="absolute top-6 left-6 flex items-center gap-6 pointer-events-none">
+                <div className="bg-black/60 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex flex-col min-w-[120px]">
+                    <span className="text-[10px] text-cyan-400 font-black tracking-widest uppercase mb-1">SKOR</span>
+                    <span className="text-white text-3xl font-black italic">{score}</span>
+                </div>
+            </div>
+
+            <div className="absolute top-6 right-6 pointer-events-none opacity-40">
+                <div className="text-right text-white/50 text-[10px] font-bold uppercase tracking-widest">
+                    HASD / OKLAR : HAREKET
+                </div>
             </div>
 
             <TouchController
-                onMove={(data) => setJoystick(data)}
+                onMove={(data) => { joystickRef.current = data; }}
                 actions={['Boost']}
                 onAction={(a) => console.log('Action:', a)}
             />
