@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, Suspense, useMemo } from 'react';
+import React, { useState, useRef, useEffect, Suspense, useMemo, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Sky, Stars, Environment, Text, Float, ContactShadows, RoundedBox, MeshReflectorMaterial } from '@react-three/drei';
 import * as THREE from 'three';
@@ -250,7 +250,12 @@ function GameEngine({
 
     return (
         <group>
-            <PlayerSphere radius={player.radius} position={player.position} color={player.color} name={player.name || ''} />
+            <PlayerSphere
+                radius={playerRef.current.radius}
+                position={playerRef.current.position}
+                color={playerRef.current.color}
+                name={playerRef.current.name || ''}
+            />
             {foods.map(f => <Food key={f.id} position={f.position} color={f.color} />)}
             {gifts.map(g => <Gift key={g.id} position={g.position} />)}
             {bots.map(b => (
