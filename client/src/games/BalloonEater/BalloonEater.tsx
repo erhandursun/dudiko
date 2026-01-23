@@ -33,7 +33,7 @@ export default function BalloonEater() {
 
     const [foods, setFoods] = useState<Food[]>([]);
     const [joystick, setJoystick] = useState({ x: 0, y: 0 });
-    const requestRef = useRef<number>();
+    const requestRef = useRef<number | null>(null);
     const worldSize = 2000;
 
     // Initialize Food
@@ -91,7 +91,11 @@ export default function BalloonEater() {
 
     useEffect(() => {
         requestRef.current = requestAnimationFrame(update);
-        return () => cancelAnimationFrame(requestRef.current!);
+        return () => {
+            if (requestRef.current !== null) {
+                cancelAnimationFrame(requestRef.current);
+            }
+        };
     }, [update]);
 
     // Canvas Rendering
