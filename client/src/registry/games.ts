@@ -10,10 +10,10 @@ export interface GameMetadata {
 export const GAME_REGISTRY: Record<string, GameMetadata> = {
     'balloon-eater': {
         id: 'balloon-eater',
-        title: 'Balloon Eater',
-        description: 'Eat static balloons to grow! Avoid larger players. Agar.io style multiplayer fun.',
+        title: 'Balloon Eater 3D',
+        description: 'Eat blocks and other spheres to become the biggest! Featuring gift boxes and bots.',
         thumbnail: '/thumbnails/balloon-eater.jpg',
-        category: '2D',
+        category: '3D',
         multiplayer: true
     },
     'multiplayer-snake': {

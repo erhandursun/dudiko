@@ -8,7 +8,7 @@ import PortalLobby from '@/components/portal/PortalLobby';
 import GameContainer from '@/components/portal/GameContainer';
 import { GAME_REGISTRY } from '@/registry/games';
 
-const BalloonEater = dynamic(() => import('@/games/BalloonEater/BalloonEater'), { ssr: false });
+const BalloonEater = dynamic(() => import('@/games/BalloonEater3D/BalloonEater3D'), { ssr: false });
 const VoxelWorld = dynamic(() => import('@/games/VoxelWorld/VoxelWorld'), { ssr: false });
 // Other games will be added here as they are implemented
 
