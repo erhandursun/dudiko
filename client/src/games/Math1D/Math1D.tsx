@@ -66,7 +66,13 @@ export default function Math1D() {
         } else {
             setStreak(0);
             setIsWrong(true);
-            setMessage('TEKRAR DENE! ❌');
+
+            // Score penalty: -5 points, minimum 0
+            const penalty = -5;
+            setScore(prev => Math.max(0, prev + penalty));
+            reportMathSolved(penalty);
+
+            setMessage('TEKRAR DENE! ❌ (-5)');
             setTimeout(() => {
                 setIsWrong(false);
                 setMessage('');
@@ -115,7 +121,7 @@ export default function Math1D() {
             <div className="flex-none bg-white/40 border-b border-princess-pink/5 px-4 py-2 overflow-hidden overflow-x-auto whitespace-nowrap hide-scrollbar">
                 <div className="flex items-center gap-3">
                     <span className="text-[9px] font-black text-princess-hot/40 uppercase tracking-widest">ÇEVRİMİÇİ:</span>
-                    {onlinePlayerList.map((p: any, i) => (
+                    {onlinePlayerList.map((p: any, i: number) => (
                         <div key={i} className="inline-flex items-center gap-1.5 bg-white/60 px-2 py-1 rounded-lg border border-princess-pink/5">
                             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                             <span className="text-[10px] font-bold text-princess-hot/80 uppercase">{p.name || 'Gezgin'}</span>
@@ -197,7 +203,7 @@ export default function Math1D() {
                         </div>
                         <div className="space-y-1.5 overflow-y-auto max-h-32 pr-1 custom-scrollbar">
                             <AnimatePresence initial={false}>
-                                {notifications.map((notif: any, i) => (
+                                {notifications.map((notif: any, i: number) => (
                                     <motion.div
                                         key={notif.id || i}
                                         initial={{ x: 20, opacity: 0 }}
@@ -224,7 +230,7 @@ export default function Math1D() {
                         </div>
 
                         <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
-                            {leaderboard.map((player: any, idx) => (
+                            {leaderboard.map((player: any, idx: number) => (
                                 <div
                                     key={idx}
                                     className={`flex items-center justify-between p-2.5 rounded-xl ${player.name === myName ? 'bg-gradient-to-r from-princess-pink to-princess-hot text-white shadow-sm' : 'bg-white text-princess-hot border border-princess-pink/5'}`}
