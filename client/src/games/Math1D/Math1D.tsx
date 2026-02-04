@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSocketStore } from '@/stores/socketStore';
-import { Trophy, Star, MessageCircle, User, LayoutDashboard, ChevronUp, ChevronDown } from 'lucide-react';
+import { Trophy, Star, MessageCircle, User, LayoutDashboard, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Math1D() {
@@ -15,6 +15,7 @@ export default function Math1D() {
     const [showLeaderboard, setShowLeaderboard] = useState(false);
 
     const myName = useSocketStore((state) => state.myName);
+    const players = useSocketStore((state) => state.players) || {};
     const leaderboard = useSocketStore((state) => state.leaderboard) || [];
     const notifications = useSocketStore((state) => state.notifications) || [];
     const reportMathSolved = useSocketStore((state) => state.reportMathSolved);
@@ -73,6 +74,8 @@ export default function Math1D() {
         }
     };
 
+    const onlinePlayerList = Object.values(players);
+
     return (
         <div className="flex flex-col h-[100dvh] bg-[#fdf2f8] font-sans overflow-hidden select-none">
             {/* Header / Stats */}
@@ -82,12 +85,18 @@ export default function Math1D() {
                         <Star fill="currentColor" size={20} />
                     </div>
                     <div>
-                        <div className="text-[9px] text-princess-hot font-black uppercase tracking-widest opacity-50">PUAN</div>
+                        <div className="text-[9px] text-princess-hot font-black uppercase tracking-widest opacity-50">PUANIN</div>
                         <div className="text-xl font-black text-princess-hot leading-none">{score}</div>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-2">
+                    {/* Live Players Bubble */}
+                    <div className="hidden sm:flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-princess-pink/10">
+                        <Users size={14} className="text-princess-hot" />
+                        <span className="text-xs font-black text-princess-hot">{onlinePlayerList.length}</span>
+                    </div>
+
                     <div className="bg-orange-100 px-3 py-1.5 rounded-xl flex items-center gap-1 border border-orange-200">
                         <span className="text-lg">🔥</span>
                         <span className="font-black text-orange-600 text-sm">{streak}</span>
@@ -102,10 +111,23 @@ export default function Math1D() {
                 </div>
             </div>
 
+            {/* Online Players Banner (Horizontal Scroller) */}
+            <div className="flex-none bg-white/40 border-b border-princess-pink/5 px-4 py-2 overflow-hidden overflow-x-auto whitespace-nowrap hide-scrollbar">
+                <div className="flex items-center gap-3">
+                    <span className="text-[9px] font-black text-princess-hot/40 uppercase tracking-widest">ÇEVRİMİÇİ:</span>
+                    {onlinePlayerList.map((p: any, i) => (
+                        <div key={i} className="inline-flex items-center gap-1.5 bg-white/60 px-2 py-1 rounded-lg border border-princess-pink/5">
+                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                            <span className="text-[10px] font-bold text-princess-hot/80 uppercase">{p.name || 'Gezgin'}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
             <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                 {/* Main Game Area */}
                 <div className="flex-1 p-4 flex flex-col items-center justify-center gap-4 md:gap-8 relative overflow-hidden">
-                    {/* Floating Ornaments - Reduced for mobile cleanup */}
+                    {/* Floating Ornaments */}
                     <div className="absolute top-10 left-10 text-4xl opacity-5 animate-pulse hidden md:block">✨</div>
                     <div className="absolute bottom-20 right-10 text-4xl opacity-5 animate-bounce hidden md:block">💎</div>
 
@@ -152,7 +174,7 @@ export default function Math1D() {
                     </div>
                 </div>
 
-                {/* Sidebar: Feed and Leaderboard (Floating on mobile) */}
+                {/* Sidebar: Feed and Leaderboard */}
                 <div className={`
                     fixed inset-x-0 bottom-0 md:relative md:inset-auto z-40 
                     md:w-72 bg-white/95 backdrop-blur-2xl md:bg-white/50 
@@ -160,7 +182,6 @@ export default function Math1D() {
                     flex flex-col transition-transform duration-500 ease-in-out
                     ${showLeaderboard ? 'translate-y-0 h-[60vh]' : 'translate-y-full md:translate-y-0 md:h-full'}
                 `}>
-                    {/* Mobile Header for Sidebar */}
                     <div
                         className="flex-none p-2 flex justify-center md:hidden border-b border-princess-pink/5"
                         onClick={() => setShowLeaderboard(false)}
@@ -169,26 +190,26 @@ export default function Math1D() {
                     </div>
 
                     {/* Success Feed */}
-                    <div className="flex-none p-3 border-b border-princess-pink/10 max-h-32 overflow-hidden">
+                    <div className="flex-none p-3 border-b border-princess-pink/10">
                         <div className="flex items-center gap-2 mb-2">
                             <MessageCircle className="text-princess-hot/50" size={14} />
-                            <span className="text-[10px] font-black text-princess-hot/50 uppercase tracking-widest">HABERLER</span>
+                            <span className="text-[10px] font-black text-princess-hot/50 uppercase tracking-widest">BAŞARI AKIŞI</span>
                         </div>
-                        <div className="space-y-1.5 overflow-y-auto max-h-20 pr-1 custom-scrollbar">
-                            <AnimatePresence>
-                                {notifications.slice(0, 3).map((notif: any, i: number) => (
+                        <div className="space-y-1.5 overflow-y-auto max-h-32 pr-1 custom-scrollbar">
+                            <AnimatePresence initial={false}>
+                                {notifications.map((notif: any, i) => (
                                     <motion.div
                                         key={notif.id || i}
-                                        initial={{ x: 10, opacity: 0 }}
+                                        initial={{ x: 20, opacity: 0 }}
                                         animate={{ x: 0, opacity: 1 }}
-                                        className="bg-white/50 p-2 rounded-xl border border-princess-pink/5 flex items-center gap-2"
+                                        className="bg-white p-2.5 rounded-xl border-l-4 border-l-green-400 shadow-sm flex items-center gap-2"
                                     >
-                                        <span className="text-[10px] font-bold text-princess-hot/70">{notif.message}</span>
+                                        <span className="text-[10px] font-bold text-princess-hot/90 leading-tight">{notif.message}</span>
                                     </motion.div>
                                 ))}
                             </AnimatePresence>
                             {notifications.length === 0 && (
-                                <div className="text-[9px] text-center text-gray-400 mt-2 italic">Ekibi bekliyoruz...</div>
+                                <div className="text-[9px] text-center text-gray-400 mt-2 italic tracking-tighter uppercase font-black">Soruları bilmeye başla!</div>
                             )}
                         </div>
                     </div>
@@ -198,12 +219,12 @@ export default function Math1D() {
                         <div className="flex items-center justify-between mb-3 flex-none">
                             <div className="flex items-center gap-2">
                                 <Trophy className="text-princess-gold" size={16} />
-                                <span className="text-[10px] font-black text-princess-hot uppercase tracking-widest">SIRALAMA</span>
+                                <span className="text-[10px] font-black text-princess-hot uppercase tracking-widest">PUAN SIRALAMASI</span>
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
-                            {leaderboard.map((player: any, idx: number) => (
+                        <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
+                            {leaderboard.map((player: any, idx) => (
                                 <div
                                     key={idx}
                                     className={`flex items-center justify-between p-2.5 rounded-xl ${player.name === myName ? 'bg-gradient-to-r from-princess-pink to-princess-hot text-white shadow-sm' : 'bg-white text-princess-hot border border-princess-pink/5'}`}
@@ -215,16 +236,10 @@ export default function Math1D() {
                                         <span className="font-black text-xs truncate uppercase tracking-tighter">{player.name}</span>
                                     </div>
                                     <div className="font-black text-xs px-2 py-0.5 rounded-lg bg-black/5">
-                                        {player.score} <span className="text-[8px] opacity-60">P</span>
+                                        {player.score} <span className="text-[8px] opacity-60 px-0.5">P</span>
                                     </div>
                                 </div>
                             ))}
-                            {leaderboard.length === 0 && (
-                                <div className="text-center p-6 bg-black/5 rounded-2xl flex flex-col items-center">
-                                    <div className="text-2xl mb-1">👑</div>
-                                    <div className="text-[8px] font-black text-gray-400 uppercase tracking-tighter">İLK SEN OL!</div>
-                                </div>
-                            )}
                         </div>
 
                         {/* Current Player Status Bar */}
@@ -233,7 +248,7 @@ export default function Math1D() {
                                 <User size={16} />
                             </div>
                             <div className="overflow-hidden">
-                                <div className="text-[8px] font-black text-princess-pink uppercase leading-none mb-0.5">SENİN ADIN</div>
+                                <div className="text-[8px] font-black text-princess-pink uppercase leading-none mb-0.5">BENİM ADIM</div>
                                 <div className="text-xs font-black text-princess-hot truncate uppercase leading-none tracking-tighter">{myName}</div>
                             </div>
                         </div>
@@ -262,6 +277,13 @@ export default function Math1D() {
                 .custom-scrollbar::-webkit-scrollbar-thumb {
                     background: #fbcfe8;
                     border-radius: 10px;
+                }
+                .hide-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .hide-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
                 }
             `}</style>
         </div>
