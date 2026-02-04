@@ -31,5 +31,13 @@ export const GAME_REGISTRY: Record<string, GameMetadata> = {
         thumbnail: '/thumbnails/voxel.jpg',
         category: '3D',
         multiplayer: true
+    },
+    'math-1d': {
+        id: 'math-1d',
+        title: 'Matematik Yarışı',
+        description: '1, 2 ve 3 çarpım tablolarını öğren ve yarışı kazan!',
+        thumbnail: '/thumbnails/math-1d.jpg',
+        category: '2D',
+        multiplayer: false
     }
 };
