@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSocketStore } from '@/stores/socketStore';
-import { Trophy, Star, MessageCircle, User } from 'lucide-react';
+import { Trophy, Star, MessageCircle, User, LayoutDashboard, ChevronUp, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Math1D() {
@@ -12,6 +12,7 @@ export default function Math1D() {
     const [streak, setStreak] = useState(0);
     const [message, setMessage] = useState('');
     const [isWrong, setIsWrong] = useState(false);
+    const [showLeaderboard, setShowLeaderboard] = useState(false);
 
     const myName = useSocketStore((state) => state.myName);
     const leaderboard = useSocketStore((state) => state.leaderboard) || [];
@@ -73,67 +74,77 @@ export default function Math1D() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-[#fdf2f8] font-sans overflow-hidden">
+        <div className="flex flex-col h-[100dvh] bg-[#fdf2f8] font-sans overflow-hidden select-none">
             {/* Header / Stats */}
-            <div className="p-4 bg-white/80 backdrop-blur-md border-b border-princess-pink/20 flex justify-between items-center shadow-sm">
-                <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-princess-pink to-princess-gold flex items-center justify-center text-white shadow-lg">
-                        <Star fill="currentColor" size={24} />
+            <div className="flex-none p-3 bg-white/80 backdrop-blur-md border-b border-princess-pink/20 flex justify-between items-center shadow-sm z-30">
+                <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-princess-pink to-princess-hot flex items-center justify-center text-white shadow-md">
+                        <Star fill="currentColor" size={20} />
                     </div>
                     <div>
-                        <div className="text-[10px] text-princess-hot font-black uppercase tracking-widest opacity-50">PUANIN</div>
-                        <div className="text-2xl font-black text-princess-hot leading-none">{score}</div>
+                        <div className="text-[9px] text-princess-hot font-black uppercase tracking-widest opacity-50">PUAN</div>
+                        <div className="text-xl font-black text-princess-hot leading-none">{score}</div>
                     </div>
                 </div>
 
-                <div className="bg-orange-100 px-4 py-2 rounded-2xl flex items-center gap-2 border border-orange-200">
-                    <span className="text-2xl">🔥</span>
-                    <span className="font-black text-orange-600">{streak} SERİ</span>
+                <div className="flex items-center gap-2">
+                    <div className="bg-orange-100 px-3 py-1.5 rounded-xl flex items-center gap-1 border border-orange-200">
+                        <span className="text-lg">🔥</span>
+                        <span className="font-black text-orange-600 text-sm">{streak}</span>
+                    </div>
+
+                    <button
+                        onClick={() => setShowLeaderboard(!showLeaderboard)}
+                        className="p-2 bg-white rounded-xl border border-princess-pink/20 text-princess-hot md:hidden"
+                    >
+                        <LayoutDashboard size={20} />
+                    </button>
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+            <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
                 {/* Main Game Area */}
-                <div className="flex-1 p-6 flex flex-col items-center justify-center gap-8 relative overflow-hidden">
-                    {/* Floating Ornaments */}
-                    <div className="absolute top-10 left-10 text-4xl opacity-10 animate-pulse">✨</div>
-                    <div className="absolute bottom-20 right-10 text-4xl opacity-10 animate-bounce">💎</div>
-                    <div className="absolute top-1/2 left-4 text-3xl opacity-10 rotate-12">⭐</div>
+                <div className="flex-1 p-4 flex flex-col items-center justify-center gap-4 md:gap-8 relative overflow-hidden">
+                    {/* Floating Ornaments - Reduced for mobile cleanup */}
+                    <div className="absolute top-10 left-10 text-4xl opacity-5 animate-pulse hidden md:block">✨</div>
+                    <div className="absolute bottom-20 right-10 text-4xl opacity-5 animate-bounce hidden md:block">💎</div>
 
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         className="text-center"
                     >
-                        <h2 className="text-xl font-black text-princess-hot/50 uppercase tracking-[0.2em] mb-2">SORU GELDİ!</h2>
-                        <div className="text-7xl md:text-9xl font-black text-princess-hot drop-shadow-sm flex items-center gap-4">
+                        <h2 className="text-xs font-black text-princess-hot/40 uppercase tracking-[0.2em] mb-2">NE KADAR EDER?</h2>
+                        <div className="text-6xl sm:text-7xl md:text-9xl font-black text-princess-hot drop-shadow-sm flex items-center justify-center gap-2 sm:gap-4">
                             <span>{question.table}</span>
-                            <span className="text-4xl md:text-6xl text-princess-pink">×</span>
+                            <span className="text-3xl sm:text-4xl md:text-6xl text-princess-pink">×</span>
                             <span>{question.multiplier}</span>
                         </div>
                     </motion.div>
 
-                    <AnimatePresence mode="wait">
-                        {message && (
-                            <motion.div
-                                initial={{ y: 20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                exit={{ y: -20, opacity: 0 }}
-                                className={`text-3xl font-black ${isWrong ? 'text-red-500' : 'text-green-500'}`}
-                            >
-                                {message}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    <div className="h-8 flex items-center justify-center">
+                        <AnimatePresence mode="wait">
+                            {message && (
+                                <motion.div
+                                    initial={{ y: 10, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    exit={{ y: -10, opacity: 0 }}
+                                    className={`text-xl sm:text-2xl font-black ${isWrong ? 'text-red-500' : 'text-green-500'}`}
+                                >
+                                    {message}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
 
-                    <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full max-w-sm px-2">
                         {choices.map((choice, i) => (
                             <motion.button
                                 key={`${question.table}-${question.multiplier}-${i}`}
-                                whileHover={{ scale: 1.05 }}
+                                whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => checkAnswer(choice)}
-                                className={`p-8 bg-white border-4 ${isWrong ? 'border-red-100' : 'border-princess-pink/20'} rounded-[32px] text-4xl font-black text-princess-hot shadow-xl hover:border-princess-pink transition-all`}
+                                className={`p-6 sm:p-8 bg-white border-4 ${isWrong ? 'border-red-100' : 'border-princess-pink/10'} rounded-[24px] sm:rounded-[32px] text-3xl sm:text-4xl font-black text-princess-hot shadow-lg hover:border-princess-pink active:bg-princess-pink/5 transition-all`}
                             >
                                 {choice}
                             </motion.button>
@@ -141,85 +152,109 @@ export default function Math1D() {
                     </div>
                 </div>
 
-                {/* Sidebar: Feed and Leaderboard */}
-                <div className="w-full md:w-80 bg-white/50 backdrop-blur-xl border-t md:border-t-0 md:border-l border-princess-pink/20 flex flex-col overflow-hidden">
+                {/* Sidebar: Feed and Leaderboard (Floating on mobile) */}
+                <div className={`
+                    fixed inset-x-0 bottom-0 md:relative md:inset-auto z-40 
+                    md:w-72 bg-white/95 backdrop-blur-2xl md:bg-white/50 
+                    border-t md:border-t-0 md:border-l border-princess-pink/20 
+                    flex flex-col transition-transform duration-500 ease-in-out
+                    ${showLeaderboard ? 'translate-y-0 h-[60vh]' : 'translate-y-full md:translate-y-0 md:h-full'}
+                `}>
+                    {/* Mobile Header for Sidebar */}
+                    <div
+                        className="flex-none p-2 flex justify-center md:hidden border-b border-princess-pink/5"
+                        onClick={() => setShowLeaderboard(false)}
+                    >
+                        <div className="w-12 h-1 bg-gray-300 rounded-full" />
+                    </div>
+
                     {/* Success Feed */}
-                    <div className="p-4 border-b border-princess-pink/10">
-                        <div className="flex items-center gap-2 mb-3">
-                            <MessageCircle className="text-princess-hot/50" size={18} />
-                            <span className="text-xs font-black text-princess-hot/50 uppercase tracking-widest">GÜNCEL AKIŞ</span>
+                    <div className="flex-none p-3 border-b border-princess-pink/10 max-h-32 overflow-hidden">
+                        <div className="flex items-center gap-2 mb-2">
+                            <MessageCircle className="text-princess-hot/50" size={14} />
+                            <span className="text-[10px] font-black text-princess-hot/50 uppercase tracking-widest">HABERLER</span>
                         </div>
-                        <div className="space-y-2 h-32 md:h-48 overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="space-y-1.5 overflow-y-auto max-h-20 pr-1 custom-scrollbar">
                             <AnimatePresence>
-                                {notifications.map((notif: any, i: number) => (
+                                {notifications.slice(0, 3).map((notif: any, i: number) => (
                                     <motion.div
                                         key={notif.id || i}
-                                        initial={{ x: 20, opacity: 0 }}
+                                        initial={{ x: 10, opacity: 0 }}
                                         animate={{ x: 0, opacity: 1 }}
-                                        className="bg-white p-3 rounded-2xl shadow-sm border border-princess-pink/5 flex items-center gap-3"
+                                        className="bg-white/50 p-2 rounded-xl border border-princess-pink/5 flex items-center gap-2"
                                     >
-                                        <div className="w-8 h-8 rounded-full bg-princess-pink/10 flex items-center justify-center text-xs">✨</div>
-                                        <span className="text-xs font-bold text-princess-hot/80">{notif.message}</span>
+                                        <span className="text-[10px] font-bold text-princess-hot/70">{notif.message}</span>
                                     </motion.div>
                                 ))}
                             </AnimatePresence>
                             {notifications.length === 0 && (
-                                <div className="text-[10px] text-center text-gray-400 mt-4 italic">Bilenleri burada göreceksin...</div>
+                                <div className="text-[9px] text-center text-gray-400 mt-2 italic">Ekibi bekliyoruz...</div>
                             )}
                         </div>
                     </div>
 
                     {/* Scoreboard */}
-                    <div className="flex-1 p-4 flex flex-col overflow-hidden">
-                        <div className="flex items-center justify-between mb-4">
+                    <div className="flex-1 p-3 flex flex-col overflow-hidden">
+                        <div className="flex items-center justify-between mb-3 flex-none">
                             <div className="flex items-center gap-2">
-                                <Trophy className="text-princess-gold" size={18} />
-                                <span className="text-xs font-black text-princess-hot uppercase tracking-widest">PUAN TABLOSU</span>
+                                <Trophy className="text-princess-gold" size={16} />
+                                <span className="text-[10px] font-black text-princess-hot uppercase tracking-widest">SIRALAMA</span>
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                             {leaderboard.map((player: any, idx: number) => (
                                 <div
                                     key={idx}
-                                    className={`flex items-center justify-between p-3 rounded-2xl ${player.name === myName ? 'bg-gradient-to-r from-princess-pink to-princess-hot text-white shadow-md' : 'bg-white text-princess-hot border border-princess-pink/5'}`}
+                                    className={`flex items-center justify-between p-2.5 rounded-xl ${player.name === myName ? 'bg-gradient-to-r from-princess-pink to-princess-hot text-white shadow-sm' : 'bg-white text-princess-hot border border-princess-pink/5'}`}
                                 >
-                                    <div className="flex items-center gap-3 overflow-hidden">
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ${player.name === myName ? 'bg-white/20' : 'bg-gray-100 text-gray-400'}`}>
+                                    <div className="flex items-center gap-2 overflow-hidden">
+                                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-[10px] ${player.name === myName ? 'bg-white/20' : 'bg-gray-100 text-gray-400'}`}>
                                             {idx + 1}
                                         </div>
-                                        <span className="font-black truncate">{player.name}</span>
+                                        <span className="font-black text-xs truncate uppercase tracking-tighter">{player.name}</span>
                                     </div>
-                                    <div className="font-black px-3 py-1 rounded-xl bg-black/5 flex items-center gap-1">
-                                        {player.score} <span className="text-[10px] opacity-60">P</span>
+                                    <div className="font-black text-xs px-2 py-0.5 rounded-lg bg-black/5">
+                                        {player.score} <span className="text-[8px] opacity-60">P</span>
                                     </div>
                                 </div>
                             ))}
                             {leaderboard.length === 0 && (
-                                <div className="text-center p-8 bg-black/5 rounded-3xl">
-                                    <div className="text-3xl mb-2">👑</div>
-                                    <div className="text-xs font-bold text-gray-400 uppercase tracking-tighter">İLK SEN BİL, KRAL OL!</div>
+                                <div className="text-center p-6 bg-black/5 rounded-2xl flex flex-col items-center">
+                                    <div className="text-2xl mb-1">👑</div>
+                                    <div className="text-[8px] font-black text-gray-400 uppercase tracking-tighter">İLK SEN OL!</div>
                                 </div>
                             )}
                         </div>
 
                         {/* Current Player Status Bar */}
-                        <div className="mt-4 pt-4 border-t border-princess-pink/10 flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-princess-pink flex items-center justify-center text-white shadow-inner">
-                                <User size={20} />
+                        <div className="mt-3 pt-3 border-t border-princess-pink/10 flex items-center gap-2 flex-none">
+                            <div className="w-8 h-8 rounded-full bg-princess-pink flex items-center justify-center text-white shadow-inner">
+                                <User size={16} />
                             </div>
                             <div className="overflow-hidden">
-                                <div className="text-[10px] font-black text-princess-pink uppercase leading-none mb-1">ŞU AN BURADASIN</div>
-                                <div className="text-sm font-black text-princess-hot truncate uppercase">{myName}</div>
+                                <div className="text-[8px] font-black text-princess-pink uppercase leading-none mb-0.5">SENİN ADIN</div>
+                                <div className="text-xs font-black text-princess-hot truncate uppercase leading-none tracking-tighter">{myName}</div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {/* Overlay for mobile drawer */}
+                {showLeaderboard && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowLeaderboard(false)}
+                        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 md:hidden"
+                    />
+                )}
             </div>
 
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar {
-                    width: 4px;
+                    width: 3px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-track {
                     background: transparent;
