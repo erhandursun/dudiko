@@ -50,16 +50,18 @@ export default function PortalLobby({ onSelectGame, myName }: PortalLobbyProps) 
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.2 }}
                     className="relative w-full h-[400px] rounded-[48px] overflow-hidden mb-12 group cursor-pointer border border-white/5"
-                    onClick={() => onSelectGame('balloon-eater')}
+                    onClick={() => onSelectGame('math-1d')}
                 >
-                    <div className="absolute inset-0 bg-gradient-to-tr from-cyan-600/40 to-transparent z-10" />
-                    <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop")' }} />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-pink-600/40 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-pink-100 transition-transform duration-700 group-hover:scale-110 flex items-center justify-center">
+                        <span className="text-9xl">🎯</span>
+                    </div>
                     <div className="absolute bottom-0 left-0 w-full p-12 z-20 bg-gradient-to-t from-black/80 to-transparent">
-                        <div className="inline-block px-4 py-1 bg-cyan-500 text-black text-[10px] font-black rounded-full mb-4 uppercase">ÖNE ÇIKAN</div>
-                        <h2 className="text-5xl font-black mb-4 tracking-tighter italic">BALLOON EATER</h2>
-                        <p className="text-lg text-white/60 max-w-xl mb-8 font-medium">Büyümek için ye, hayatta kalmak için kaç. Yeni nesil agar.io deneyimi şimdi mobilde!</p>
+                        <div className="inline-block px-4 py-1 bg-princess-pink text-white text-[10px] font-black rounded-full mb-4 uppercase">YENİ OYUN</div>
+                        <h2 className="text-5xl font-black mb-4 tracking-tighter italic text-white uppercase">MATEMATİK YARIŞI</h2>
+                        <p className="text-lg text-white/60 max-w-xl mb-8 font-medium">1, 2 ve 3'ler çarpım tablosunu eğlenerek öğren! Arkadaşlarınla yarış ve puan topla.</p>
                         <button className="px-10 py-5 bg-white text-black font-black text-xl rounded-2xl flex items-center gap-4 hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-                            ŞİMDİ OYNA <Play fill="currentColor" />
+                            HEMEN BAŞLA <Play fill="currentColor" />
                         </button>
                     </div>
                 </motion.div>

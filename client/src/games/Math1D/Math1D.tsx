@@ -151,7 +151,7 @@ export default function Math1D() {
                         </div>
                         <div className="space-y-2 h-32 md:h-48 overflow-y-auto pr-2 custom-scrollbar">
                             <AnimatePresence>
-                                {notifications.map((notif, i) => (
+                                {notifications.map((notif: any, i: number) => (
                                     <motion.div
                                         key={notif.id || i}
                                         initial={{ x: 20, opacity: 0 }}
@@ -217,7 +217,7 @@ export default function Math1D() {
                 </div>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 .custom-scrollbar::-webkit-scrollbar {
                     width: 4px;
                 }

@@ -28,6 +28,7 @@ export default function Home() {
     const handleJoin = (name: string, color: string, characterType: string, customization: any) => {
         joinGame(name, color, characterType, customization);
         setIsLoggedIn(true);
+        setActiveGameId('math-1d'); // Auto-select math game
     };
 
     const handleSelectGame = (gameId: string) => {
