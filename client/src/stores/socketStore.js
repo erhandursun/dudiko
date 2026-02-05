@@ -24,6 +24,7 @@ export const useSocketStore = create((set, get) => ({
     currentWorld: 'hub', // hub, town, school
     disguiseProp: null, // 'tree', 'lamp', 'trash'
     notifications: [], // { id, message, type }
+    chatMessages: [], // { id, name, message, time }
     joystickData: { x: 0, y: 0, jump: false, action: false, aim: false },
 
     setJoystickData: (data) => set((state) => ({
@@ -207,7 +208,28 @@ export const useSocketStore = create((set, get) => ({
                 }, 2000);
             });
 
-            s.on('player-chat', ({ id, message }) => {
+            s.on('player-chat', ({ id, message, name, time }) => {
+                const chatId = Date.now() + Math.random();
+                const chatMsg = {
+                    id: chatId,
+                    playerId: id,
+                    name: name || 'Unknown',
+                    message,
+                    time
+                };
+
+                set((state) => ({
+                    chatMessages: [...state.chatMessages, chatMsg].slice(-20) // Keep last 20 messages
+                }));
+
+                // Auto-remove after 5 minutes
+                setTimeout(() => {
+                    set((state) => ({
+                        chatMessages: state.chatMessages.filter(m => m.id !== chatId)
+                    }));
+                }, 300000);
+
+                // Also update the chatMessage property on player for bubble display
                 set((state) => {
                     if (!state.players[id]) return state;
                     return {

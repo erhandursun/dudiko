@@ -13,7 +13,6 @@ export default function Math1D() {
     const [message, setMessage] = useState('');
     const [isWrong, setIsWrong] = useState(false);
     const [showLeaderboard, setShowLeaderboard] = useState(false);
-    const [showChat, setShowChat] = useState(false);
     const [chatMessage, setChatMessage] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -23,6 +22,7 @@ export default function Math1D() {
     const notifications = useSocketStore((state) => state.notifications) || [];
     const reportMathSolved = useSocketStore((state) => state.reportMathSolved);
     const sendChatMessage = useSocketStore((state) => state.sendChatMessage);
+    const chatMessages = useSocketStore((state) => state.chatMessages) || [];
 
     // Calculate my rank
     const myRank = leaderboard.findIndex((p: any) => p.name === myName) + 1;
@@ -329,95 +329,71 @@ export default function Math1D() {
                 )}
             </div>
 
-            {/* Chat Window - Compact & Mobile-Friendly */}
-            <AnimatePresence>
-                {showChat && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 20 }}
-                        className="fixed bottom-20 right-4 w-72 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border-2 border-princess-pink/20 z-50 overflow-hidden"
-                    >
-                        {/* Chat Header */}
-                        <div className="bg-gradient-to-r from-princess-pink to-princess-hot p-3 flex justify-between items-center">
-                            <div className="flex items-center gap-2">
-                                <MessageCircle size={16} className="text-white" />
-                                <span className="text-white font-black text-xs uppercase">Sohbet</span>
+            {/* Fixed Bottom Chat Bar - Always Visible */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t-2 border-princess-pink/20 z-50 shadow-2xl">
+                {/* Recent Messages Ticker */}
+                <div className="px-4 py-1 overflow-x-auto whitespace-nowrap hide-scrollbar bg-princess-pink/5 border-b border-princess-pink/10">
+                    <div className="flex gap-4 items-center">
+                        <MessageCircle size={12} className="text-princess-hot flex-shrink-0" />
+                        {chatMessages.slice(-5).map((msg: any) => (
+                            <div key={msg.id} className="inline-flex items-center gap-1 flex-shrink-0">
+                                <span className="text-[9px] text-princess-hot/60 font-black uppercase">{msg.name}:</span>
+                                <span className="text-[10px] text-princess-hot/80 font-bold">{msg.message}</span>
                             </div>
-                            <button onClick={() => setShowChat(false)} className="text-white/80 hover:text-white">
-                                <X size={16} />
-                            </button>
-                        </div>
+                        ))}
+                        {chatMessages.length === 0 && (
+                            <span className="text-[9px] text-gray-400 italic">Mesaj yazarak sohbete katıl!</span>
+                        )}
+                    </div>
+                </div>
 
-                        {/* Chat Messages */}
-                        <div className="p-3 h-32 overflow-y-auto space-y-2 custom-scrollbar">
-                            {notifications.slice(0, 3).map((notif: any, i: number) => (
-                                <div key={i} className="bg-princess-pink/10 p-2 rounded-xl text-xs text-princess-hot font-bold">
-                                    {notif.message}
-                                </div>
-                            ))}
-                            {notifications.length === 0 && (
-                                <div className="text-center text-gray-400 text-xs mt-8 italic">Henüz mesaj yok...</div>
-                            )}
-                        </div>
-
-                        {/* Emoji Picker - Simple */}
-                        <AnimatePresence>
-                            {showEmojiPicker && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    className="px-3 pb-2 flex gap-2 flex-wrap border-t border-princess-pink/10"
+                {/* Emoji Picker - Compact */}
+                <AnimatePresence>
+                    {showEmojiPicker && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="px-3 py-2 flex gap-2 flex-wrap border-b border-princess-pink/10 bg-white"
+                        >
+                            {emojis.map((emoji, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => handleEmojiClick(emoji)}
+                                    className="text-xl hover:scale-125 transition-transform"
                                 >
-                                    {emojis.map((emoji, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => handleEmojiClick(emoji)}
-                                            className="text-2xl hover:scale-125 transition-transform"
-                                        >
-                                            {emoji}
-                                        </button>
-                                    ))}
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                                    {emoji}
+                                </button>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-                        {/* Chat Input */}
-                        <div className="p-3 border-t border-princess-pink/10 flex gap-2">
-                            <button
-                                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                className="p-2 bg-princess-pink/10 rounded-xl text-princess-hot hover:bg-princess-pink/20 transition-colors"
-                            >
-                                <Smile size={16} />
-                            </button>
-                            <input
-                                type="text"
-                                value={chatMessage}
-                                onChange={(e) => setChatMessage(e.target.value.slice(0, 50))}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                                placeholder="Mesaj yaz..."
-                                className="flex-1 px-3 py-2 rounded-xl border border-princess-pink/20 text-xs focus:outline-none focus:border-princess-pink bg-white"
-                                maxLength={50}
-                            />
-                            <button
-                                onClick={handleSendMessage}
-                                className="p-2 bg-gradient-to-r from-princess-pink to-princess-hot rounded-xl text-white hover:shadow-lg transition-all"
-                            >
-                                <Send size={16} />
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Chat Toggle Button - Fixed Position */}
-            <button
-                onClick={() => setShowChat(!showChat)}
-                className="fixed bottom-4 right-4 w-14 h-14 bg-gradient-to-r from-princess-pink to-princess-hot rounded-full shadow-2xl flex items-center justify-center text-white z-40 hover:scale-110 transition-transform"
-            >
-                <MessageCircle size={24} />
-            </button>
+                {/* Chat Input */}
+                <div className="px-3 py-2 flex gap-2 items-center">
+                    <button
+                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                        className="p-2 bg-princess-pink/10 rounded-xl text-princess-hot hover:bg-princess-pink/20 transition-colors flex-shrink-0"
+                    >
+                        <Smile size={14} />
+                    </button>
+                    <input
+                        type="text"
+                        value={chatMessage}
+                        onChange={(e) => setChatMessage(e.target.value.slice(0, 50))}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                        placeholder="Mesaj yaz..."
+                        className="flex-1 px-3 py-2 rounded-xl border border-princess-pink/20 text-xs focus:outline-none focus:border-princess-pink bg-white"
+                        maxLength={50}
+                    />
+                    <button
+                        onClick={handleSendMessage}
+                        className="p-2 bg-gradient-to-r from-princess-pink to-princess-hot rounded-xl text-white hover:shadow-lg transition-all flex-shrink-0"
+                    >
+                        <Send size={14} />
+                    </button>
+                </div>
+            </div>
 
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar {
