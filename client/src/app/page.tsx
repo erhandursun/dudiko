@@ -11,6 +11,7 @@ import { GAME_REGISTRY } from '@/registry/games';
 const BalloonEater = dynamic(() => import('@/games/BalloonEater3D/BalloonEater3D'), { ssr: false });
 const VoxelWorld = dynamic(() => import('@/games/VoxelWorld/VoxelWorld'), { ssr: false });
 const Math1D = dynamic(() => import('@/games/Math1D/Math1D'), { ssr: false });
+const English1D = dynamic(() => import('@/games/English1D/English1D'), { ssr: false });
 // Other games will be added here as they are implemented
 
 export default function Home() {
@@ -28,7 +29,7 @@ export default function Home() {
     const handleJoin = (name: string, color: string, characterType: string, customization: any) => {
         joinGame(name, color, characterType, customization);
         setIsLoggedIn(true);
-        setActiveGameId('math-1d'); // Auto-select math game
+        setActiveGameId(null); // Let them choose from portal
     };
 
     const handleSelectGame = (gameId: string) => {
@@ -48,6 +49,8 @@ export default function Home() {
                 return <VoxelWorld />;
             case 'math-1d':
                 return <Math1D />;
+            case 'english-1d':
+                return <English1D />;
             // Add more cases here (Snake, etc.)
             default:
                 return <div className="text-white p-20 text-center font-black">BU OYUN HENÜZ GELİŞTİRİLME AŞAMASINDA... 🛠️</div>;
