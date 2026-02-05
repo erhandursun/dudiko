@@ -59,7 +59,7 @@ export default function PortalLobby({ onSelectGame, myName }: PortalLobbyProps) 
                     <div className="absolute bottom-0 left-0 w-full p-12 z-20 bg-gradient-to-t from-black/80 to-transparent">
                         <div className="inline-block px-4 py-1 bg-princess-pink text-white text-[10px] font-black rounded-full mb-4 uppercase">YENİ OYUN</div>
                         <h2 className="text-5xl font-black mb-4 tracking-tighter italic text-white uppercase">MATEMATİK YARIŞI</h2>
-                        <p className="text-lg text-white/60 max-w-xl mb-8 font-medium">1, 2 ve 3'ler çarpım tablosunu eğlenerek öğren! Arkadaşlarınla yarış ve puan topla.</p>
+                        <p className="text-lg text-white/60 max-w-xl mb-8 font-medium">2, 3 ve 4'ler çarpım tablosunu eğlenerek öğren! Arkadaşlarınla yarış ve puan topla.</p>
                         <button className="px-10 py-5 bg-white text-black font-black text-xl rounded-2xl flex items-center gap-4 hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)]">
                             HEMEN BAŞLA <Play fill="currentColor" />
                         </button>

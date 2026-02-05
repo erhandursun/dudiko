@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSocketStore } from '@/stores/socketStore';
-import { Trophy, Star, MessageCircle, User, LayoutDashboard, Users } from 'lucide-react';
+import { Trophy, Star, MessageCircle, User, LayoutDashboard, Users, Send, Smile, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Math1D() {
@@ -13,15 +13,33 @@ export default function Math1D() {
     const [message, setMessage] = useState('');
     const [isWrong, setIsWrong] = useState(false);
     const [showLeaderboard, setShowLeaderboard] = useState(false);
+    const [showChat, setShowChat] = useState(false);
+    const [chatMessage, setChatMessage] = useState('');
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     const myName = useSocketStore((state) => state.myName);
     const players = useSocketStore((state) => state.players) || {};
     const leaderboard = useSocketStore((state) => state.leaderboard) || [];
     const notifications = useSocketStore((state) => state.notifications) || [];
     const reportMathSolved = useSocketStore((state) => state.reportMathSolved);
+    const sendChatMessage = useSocketStore((state) => state.sendChatMessage);
+
+    // Calculate my rank
+    const myRank = leaderboard.findIndex((p: any) => p.name === myName) + 1;
+
+    // Motivational messages for kids
+    const motivationalMessages = {
+        correct: ['AFERIN! 🎉', 'SÜPERSIN! 💪', 'ÇOK İYİSİN! ⭐', 'MÜKEMMEL! ✨', 'ŞAMPIYONSIN! 🏆'],
+        wrong: ['BİR DAHA DENE! 💪', 'OLACAK! 🎯', 'SEN YAPARSM! ⭐', 'DEVAM ET! 🔥'],
+        streak3: 'İMPARATOR OLUYORSUN! 👑',
+        streak5: 'DURDURULAMAZSIN! 🚀',
+        top3: 'TOP 3\'TESIN! 🏆🏆🏆'
+    };
+
+    const emojis = ['🎉', '🔥', '💯', '⭐', '👍', '💪', '🎯', '✨'];
 
     function generateQuestion() {
-        const tables = [1, 2, 3];
+        const tables = [2, 3, 4];
         const table = tables[Math.floor(Math.random() * tables.length)];
         const multiplier = Math.floor(Math.random() * 10) + 1;
         const answer = table * multiplier;
@@ -55,7 +73,15 @@ export default function Math1D() {
             reportMathSolved(points);
 
             setIsWrong(false);
-            setMessage('DOĞRU! 🎉');
+
+            // Enhanced motivational messages
+            let motivationMsg = motivationalMessages.correct[Math.floor(Math.random() * motivationalMessages.correct.length)];
+            if (newStreak === 3) motivationMsg = motivationalMessages.streak3;
+            if (newStreak >= 5) motivationMsg = motivationalMessages.streak5;
+            if (myRank > 0 && myRank <= 3) {
+                setTimeout(() => setMessage(motivationalMessages.top3), 800);
+            }
+            setMessage(motivationMsg);
 
             setTimeout(() => {
                 const nextQ = generateQuestion();
@@ -72,12 +98,27 @@ export default function Math1D() {
             setScore(prev => Math.max(0, prev + penalty));
             reportMathSolved(penalty);
 
-            setMessage('TEKRAR DENE! ❌ (-5)');
+            // Positive reinforcement for wrong answers
+            const encouragement = motivationalMessages.wrong[Math.floor(Math.random() * motivationalMessages.wrong.length)];
+            setMessage(`${encouragement} (-5)`);
             setTimeout(() => {
                 setIsWrong(false);
                 setMessage('');
             }, 800);
         }
+    };
+
+    const handleSendMessage = () => {
+        if (chatMessage.trim()) {
+            sendChatMessage(chatMessage);
+            setChatMessage('');
+            setShowEmojiPicker(false);
+        }
+    };
+
+    const handleEmojiClick = (emoji: string) => {
+        setChatMessage(prev => prev + emoji);
+        setShowEmojiPicker(false);
     };
 
     const onlinePlayerList = Object.values(players);
@@ -95,6 +136,21 @@ export default function Math1D() {
                         <div className="text-xl font-black text-princess-hot leading-none">{score}</div>
                     </div>
                 </div>
+
+                {/* Ranking Badge - Prominent Display */}
+                {myRank > 0 && (
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className={`absolute left-1/2 -translate-x-1/2 px-4 py-2 rounded-2xl font-black text-sm shadow-lg ${myRank === 1 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900' :
+                            myRank === 2 ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800' :
+                                myRank === 3 ? 'bg-gradient-to-r from-orange-400 to-orange-500 text-orange-900' :
+                                    'bg-gradient-to-r from-princess-pink to-princess-hot text-white'
+                            }`}
+                    >
+                        SEN: {myRank}. SIRADASIN! {myRank <= 3 ? '🏆' : '⭐'}
+                    </motion.div>
+                )}
 
                 <div className="flex items-center gap-2">
                     {/* Live Players Bubble */}
@@ -272,6 +328,96 @@ export default function Math1D() {
                     />
                 )}
             </div>
+
+            {/* Chat Window - Compact & Mobile-Friendly */}
+            <AnimatePresence>
+                {showChat && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        className="fixed bottom-20 right-4 w-72 max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border-2 border-princess-pink/20 z-50 overflow-hidden"
+                    >
+                        {/* Chat Header */}
+                        <div className="bg-gradient-to-r from-princess-pink to-princess-hot p-3 flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <MessageCircle size={16} className="text-white" />
+                                <span className="text-white font-black text-xs uppercase">Sohbet</span>
+                            </div>
+                            <button onClick={() => setShowChat(false)} className="text-white/80 hover:text-white">
+                                <X size={16} />
+                            </button>
+                        </div>
+
+                        {/* Chat Messages */}
+                        <div className="p-3 h-32 overflow-y-auto space-y-2 custom-scrollbar">
+                            {notifications.slice(0, 3).map((notif: any, i: number) => (
+                                <div key={i} className="bg-princess-pink/10 p-2 rounded-xl text-xs text-princess-hot font-bold">
+                                    {notif.message}
+                                </div>
+                            ))}
+                            {notifications.length === 0 && (
+                                <div className="text-center text-gray-400 text-xs mt-8 italic">Henüz mesaj yok...</div>
+                            )}
+                        </div>
+
+                        {/* Emoji Picker - Simple */}
+                        <AnimatePresence>
+                            {showEmojiPicker && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="px-3 pb-2 flex gap-2 flex-wrap border-t border-princess-pink/10"
+                                >
+                                    {emojis.map((emoji, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => handleEmojiClick(emoji)}
+                                            className="text-2xl hover:scale-125 transition-transform"
+                                        >
+                                            {emoji}
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* Chat Input */}
+                        <div className="p-3 border-t border-princess-pink/10 flex gap-2">
+                            <button
+                                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                className="p-2 bg-princess-pink/10 rounded-xl text-princess-hot hover:bg-princess-pink/20 transition-colors"
+                            >
+                                <Smile size={16} />
+                            </button>
+                            <input
+                                type="text"
+                                value={chatMessage}
+                                onChange={(e) => setChatMessage(e.target.value.slice(0, 50))}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                                placeholder="Mesaj yaz..."
+                                className="flex-1 px-3 py-2 rounded-xl border border-princess-pink/20 text-xs focus:outline-none focus:border-princess-pink bg-white"
+                                maxLength={50}
+                            />
+                            <button
+                                onClick={handleSendMessage}
+                                className="p-2 bg-gradient-to-r from-princess-pink to-princess-hot rounded-xl text-white hover:shadow-lg transition-all"
+                            >
+                                <Send size={16} />
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Chat Toggle Button - Fixed Position */}
+            <button
+                onClick={() => setShowChat(!showChat)}
+                className="fixed bottom-4 right-4 w-14 h-14 bg-gradient-to-r from-princess-pink to-princess-hot rounded-full shadow-2xl flex items-center justify-center text-white z-40 hover:scale-110 transition-transform"
+            >
+                <MessageCircle size={24} />
+            </button>
 
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar {

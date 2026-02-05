@@ -500,5 +500,12 @@ export const useSocketStore = create((set, get) => ({
                 socket.emit('change-house-color', { houseId, color });
             }
         }
+    },
+
+    sendChatMessage: (message) => {
+        const { socket } = get();
+        if (socket && message.trim()) {
+            socket.emit('chat', message.trim());
+        }
     }
 }));

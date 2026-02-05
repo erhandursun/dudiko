@@ -11,7 +11,7 @@ export const GAME_REGISTRY: Record<string, GameMetadata> = {
     'math-1d': {
         id: 'math-1d',
         title: 'Matematik Yarışı',
-        description: '1, 2 ve 3 çarpım tablolarını öğren ve puan topla!',
+        description: '2, 3 ve 4 çarpım tablolarını öğren ve puan topla!',
         thumbnail: '/thumbnails/math-1d.jpg',
         category: '2D',
         multiplayer: false
