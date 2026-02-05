@@ -124,7 +124,7 @@ export default function Math1D() {
     const onlinePlayerList = Object.values(players);
 
     return (
-        <div className="flex flex-col h-[100dvh] bg-[#fdf2f8] font-sans overflow-hidden select-none">
+        <div className="flex flex-col h-[100dvh] bg-[#fdf2f8] font-sans overflow-hidden select-none pb-[140px]">
             {/* Header / Stats */}
             <div className="flex-none p-3 bg-white/80 backdrop-blur-md border-b border-princess-pink/20 flex justify-between items-center shadow-sm z-30">
                 <div className="flex items-center gap-2">
@@ -383,8 +383,9 @@ export default function Math1D() {
                         onChange={(e) => setChatMessage(e.target.value.slice(0, 50))}
                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                         placeholder="Mesaj yaz..."
-                        className="flex-1 px-3 py-2 rounded-xl border border-princess-pink/20 text-xs focus:outline-none focus:border-princess-pink bg-white"
+                        className="flex-1 px-3 py-2 rounded-xl border border-princess-pink/20 text-base focus:outline-none focus:border-princess-pink bg-white"
                         maxLength={50}
+                        style={{ fontSize: '16px' }}
                     />
                     <button
                         onClick={handleSendMessage}
