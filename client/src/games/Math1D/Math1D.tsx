@@ -333,7 +333,7 @@ export default function Math1D() {
             <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t-2 border-princess-pink/20 z-50 shadow-2xl">
                 {/* Recent Messages Ticker */}
                 <div className="px-4 py-1 overflow-x-auto whitespace-nowrap hide-scrollbar bg-princess-pink/5 border-b border-princess-pink/10">
-                    <div className="flex gap-4 items-center">
+                    <div className="flex gap-4 items-center flex-row-reverse justify-end min-w-full">
                         <MessageCircle size={12} className="text-princess-hot flex-shrink-0" />
                         {chatMessages.slice(-5).map((msg: any) => (
                             <div key={msg.id} className="inline-flex items-center gap-1 flex-shrink-0">
