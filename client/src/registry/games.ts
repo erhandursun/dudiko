@@ -20,7 +20,7 @@ export const GAME_REGISTRY: Record<string, GameMetadata> = {
         id: 'english-1d',
         title: 'Kelime Avı',
         description: 'İngilizce kelimelerin Türkçesini bul, puanları topla!',
-        thumbnail: '/thumbnails/math-1d.jpg', // Using same thumbnail for now or placeholder
+        thumbnail: '/thumbnails/english-1d.jpg',
         category: '2D',
         multiplayer: false
     }
